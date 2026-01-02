@@ -20,7 +20,8 @@ kermit = "2.0.8"
 # Kotlinx datetime for cross-platform date/time operations
 kotlinx-datetime = "0.7.1"
 kotlinx-serialization = "1.7.3"
-kamel = "0.9.1"
+kamel = "1.0.8"
+kamel-image-desktop = "1.0.0-beta.2"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -57,8 +58,9 @@ kermit-js = { module = "co.touchlab:kermit-js", version.ref = "kermit" }
 # Kotlinx datetime for cross-platform date/time operations
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinxSerializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
-kamel-image = { module = "media.kamel:kamel-image", version.ref = "kamel" }
-kamel-image-coil = { module = "media.kamel:kamel-image-coil", version.ref = "kamel" }
+kamel-core = { module = "media.kamel:kamel-core", version.ref = "kamel" }
+kamel-image-desktop = { module = "media.kamel:kamel-image-desktop", version.ref = "kamel-image-desktop" }
+kamel-image-android = { module = "media.kamel:kamel-image-android", version.ref = "kamel" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

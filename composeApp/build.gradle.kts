@@ -53,15 +53,16 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(projects.shared)
             
+            // 添加Kamel Image依赖用于跨平台图片加载
+            implementation(libs.kamel.core)
+            
             // Removed bilibiliApi from commonMain to avoid platform compatibility issues
         }
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            // 添加Coil依赖用于Android平台图片加载
-            implementation("io.coil-kt:coil-compose:2.5.0")
-            implementation("io.coil-kt:coil:2.5.0")
             implementation(projects.bilibiliApi) // Add dependency on bilibiliApi module for Android platform
+            implementation(libs.kamel.image.android)
         }
         iosMain.dependencies {
             implementation(projects.bilibiliApi) // Add dependency on bilibiliApi module for iOS platform
@@ -70,6 +71,7 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
             implementation(projects.bilibiliApi) // Add dependency on bilibiliApi module for JVM platform
+            implementation(libs.kamel.image.desktop)
         }
         jsMain.dependencies {
             implementation(projects.bilibiliApi) // Add dependency on bilibiliApi module for JS platform

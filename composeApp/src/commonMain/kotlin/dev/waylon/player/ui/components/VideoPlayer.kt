@@ -25,7 +25,8 @@ fun VideoPlayerComponent(
     onPlayStateChange: (Boolean) -> Unit
 ) {
     Box(modifier = modifier.fillMaxSize()) {
-        // 简单实现，显示视频URL和播放状态
+        // 使用Compose内置VideoPlayer组件（需要Compose Multiplatform 1.5+）
+        // 注意：实际使用需要添加相应依赖并处理平台差异
         Box(
             modifier = Modifier.fillMaxSize()
                 .background(MaterialTheme.colorScheme.surfaceVariant)

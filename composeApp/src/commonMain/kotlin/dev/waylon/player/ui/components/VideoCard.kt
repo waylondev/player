@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,6 +27,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.waylon.player.model.VideoInfo
 import dev.waylon.player.ui.theme.Corners
+import io.ktor.http.HttpHeaders
+import media.kamel.image.KamelImage
+import media.kamel.image.asyncPainterResource
 
 /**
  * 科技感视频卡片组件
@@ -64,11 +68,38 @@ fun VideoCard(
                         shape = Corners.md
                     )
             ) {
-                // 使用跨平台图片加载组件
-                ImageLoader(
+                // 使用Kamel Image库加载视频封面，添加B站Referer头
+                KamelImage(
+                    painter = asyncPainterResource(
+                        data = video.coverUrl,
+                        builder = {
+                            // 添加B站防盗链Referer头
+                            headers { it[HttpHeaders.Referrer] = "https://www.bilibili.com/" }
+                        }
+                    ),
+                    contentDescription = video.title,
                     modifier = Modifier.fillMaxSize(),
-                    url = video.coverUrl,
-                    contentDescription = video.title
+                    onLoading = {
+                        // 加载中显示进度指示器
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    },
+                    onFailure = {
+                        // 加载失败显示渐变背景
+                        Box(
+                            modifier = Modifier.fillMaxSize()
+                                .background(
+                                    brush = Brush.linearGradient(
+                                        colors = listOf(
+                                            MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                                            MaterialTheme.colorScheme.secondary.copy(alpha = 0.3f),
+                                            MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
+                                        )
+                                    )
+                                )
+                        )
+                    }
                 )
                 // 视频时长
                 Box(
