@@ -59,8 +59,7 @@ fun VideoListScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CircularProgressIndicator(
-                color = androidx.compose.material3.MaterialTheme.colorScheme.primary,
-                modifier = Modifier.height(48.dp).width(48.dp)
+                color = androidx.compose.material3.MaterialTheme.colorScheme.primary
             )
                 Text(
                     text = "加载中...",
@@ -123,8 +122,7 @@ fun VideoListScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             CircularProgressIndicator(
-                                color = androidx.compose.material3.MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.height(32.dp).width(32.dp)
+                                color = androidx.compose.material3.MaterialTheme.colorScheme.primary
                             )
                             Text(
                                 text = "加载更多...",

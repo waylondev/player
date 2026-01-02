@@ -76,7 +76,7 @@ fun MainScreen() {
                         }
                     )
 
-                    1 -> HotVideosScreen(
+                    1 -> RankingScreen(
                         isRefreshing = isRefreshing,
                         onRefreshComplete = { isRefreshing = false },
                         onVideoClick = { videoId ->
@@ -85,16 +85,7 @@ fun MainScreen() {
                         }
                     )
 
-                    2 -> RankingScreen(
-                        isRefreshing = isRefreshing,
-                        onRefreshComplete = { isRefreshing = false },
-                        onVideoClick = { videoId ->
-                            currentVideoId = videoId
-                            showVideoDetail = true
-                        }
-                    )
-
-                    3 -> SearchScreen(
+                    2 -> SearchScreen(
                         isRefreshing = isRefreshing,
                         onRefreshComplete = { isRefreshing = false },
                         onVideoClick = { videoId ->

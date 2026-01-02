@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
@@ -49,6 +50,9 @@ fun SearchScreen(
     var searchResults by remember { mutableStateOf<List<VideoInfo>>(emptyList()) }
     var isSearching by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+    
+    // 网格状态，用于加载更多
+    val gridState = rememberLazyGridState()
 
     // 执行搜索
     LaunchedEffect(searchKeyword, isRefreshing) {
@@ -59,13 +63,13 @@ fun SearchScreen(
             onRefreshComplete()
             return@LaunchedEffect
         }
-
+        
         // 如果是刷新状态但没有搜索关键词，直接完成刷新
         if (isRefreshing && searchKeyword.isBlank()) {
             onRefreshComplete()
             return@LaunchedEffect
         }
-
+        
         // 如果有搜索关键词，执行搜索
         if (searchKeyword.isNotBlank()) {
             try {
@@ -87,7 +91,7 @@ fun SearchScreen(
         }
     }
 
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = Modifier.fillMaxSize()) {
         // 搜索栏
         OutlinedTextField(
             value = searchKeyword,
@@ -125,7 +129,7 @@ fun SearchScreen(
         if (isSearching) {
             // 搜索中状态
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(64.dp))
@@ -141,7 +145,7 @@ fun SearchScreen(
         } else if (searchKeyword.isBlank()) {
             // 搜索提示
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(64.dp))
@@ -168,7 +172,7 @@ fun SearchScreen(
         } else if (searchResults.isEmpty()) {
             // 无结果提示
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(64.dp))
@@ -180,6 +184,7 @@ fun SearchScreen(
         } else {
             // 搜索结果列表 - 自适应布局，每个卡片最小宽度200dp
             LazyVerticalGrid(
+                state = gridState,
                 columns = GridCells.Adaptive(minSize = 200.dp),
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(8.dp)
