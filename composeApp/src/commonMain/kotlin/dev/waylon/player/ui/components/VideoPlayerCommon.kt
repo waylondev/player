@@ -48,20 +48,20 @@ fun CommonVideoPlayerComponent(
                     .padding(16.dp),
                 style = MaterialTheme.typography.headlineSmall
             )
-            
+
             Text(
                 text = "播放地址: $url",
                 modifier = Modifier.align(Alignment.Center),
                 style = MaterialTheme.typography.bodyMedium
             )
-            
+
             Text(
                 text = if (isPlaying) "播放中" else "已暂停",
                 modifier = Modifier.align(Alignment.BottomCenter)
                     .padding(16.dp),
                 style = MaterialTheme.typography.bodyMedium
             )
-            
+
             // 播放状态指示器
             if (isPlaying) {
                 CircularProgressIndicator(

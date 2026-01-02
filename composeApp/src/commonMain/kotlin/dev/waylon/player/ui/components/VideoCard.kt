@@ -3,6 +3,7 @@ package dev.waylon.player.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,8 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.waylon.player.model.VideoInfo
 import dev.waylon.player.ui.theme.Corners
-import media.kamel.image.KamelImage
-import media.kamel.image.asyncPainterResource
+import io.kamel.image.KamelImage
+import io.kamel.image.asyncPainterResource
 
 
 /**
@@ -68,45 +68,13 @@ fun VideoCard(
                         shape = Corners.md
                     )
             ) {
-                // 使用KamelImage加载视频封面，配置B站防盗链Referer
+                // 使用KamelImage加载视频封面，使用示例图片URL测试
                 KamelImage(
-                    resource = asyncPainterResource(
-                        data = video.coverUrl
-                    ) {
-                        // 配置B站防盗链所需的Referer头
-                        headers {
-                            append("Referer", "https://www.bilibili.com/")
-                            append("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
-                        }
-                    },
+                    resource = asyncPainterResource(data = video.coverUrl),
                     contentDescription = video.title,
-                    modifier = Modifier.fillMaxSize(),
-                    onLoading = {
-                        // 加载中显示进度指示器
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator(
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    },
-                    onFailure = {
-                        // 加载失败显示占位符
-                        Box(
-                            modifier = Modifier.fillMaxSize()
-                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "加载失败",
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
+                    modifier = Modifier.fillMaxSize()
                 )
-                
+
                 // 视频时长
                 Box(
                     modifier = Modifier

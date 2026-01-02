@@ -57,7 +57,7 @@ fun SearchScreen(
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var page by remember { mutableStateOf(1) }
     var hasMore by remember { mutableStateOf(true) }
-    
+
     // 网格状态，用于加载更多
     val gridState = rememberLazyGridState()
 
@@ -70,13 +70,13 @@ fun SearchScreen(
             onRefreshComplete()
             return@LaunchedEffect
         }
-        
+
         // 如果是刷新状态但没有搜索关键词，直接完成刷新
         if (isRefreshing && searchKeyword.isBlank()) {
             onRefreshComplete()
             return@LaunchedEffect
         }
-        
+
         // 如果有搜索关键词，执行搜索
         if (searchKeyword.isNotBlank()) {
             try {
@@ -101,10 +101,10 @@ fun SearchScreen(
             }
         }
     }
-    
+
     // 加载更多视频
     val coroutineScope = rememberCoroutineScope()
-    
+
     LaunchedEffect(gridState) {
         snapshotFlow {
             val visibleItems = gridState.layoutInfo.visibleItemsInfo
@@ -241,7 +241,7 @@ fun SearchScreen(
                         }
                     )
                 }
-                
+
                 // 加载更多指示器
                 if (isLoadingMore) {
                     item {

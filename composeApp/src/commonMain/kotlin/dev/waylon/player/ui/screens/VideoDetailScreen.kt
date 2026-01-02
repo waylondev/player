@@ -1,6 +1,5 @@
 package dev.waylon.player.ui.screens
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -69,7 +68,7 @@ fun VideoDetailScreen(
                 contentDescription = "返回"
             )
         }
-        
+
         if (isLoading) {
             // 居中显示加载指示器
             Box(
@@ -90,7 +89,7 @@ fun VideoDetailScreen(
                 item {
                     // 视频播放区域
                     var isPlaying by remember { mutableStateOf(false) }
-                    
+
                     VideoPlayerComponent(
                         modifier = Modifier.height(300.dp).fillMaxWidth(),
                         url = videoDetail!!.videoInfo.coverUrl, // 这里应该是视频播放地址，暂时使用封面URL
@@ -100,7 +99,7 @@ fun VideoDetailScreen(
                         }
                     )
                 }
-                
+
                 item {
                     // 视频详情信息
                     Column(modifier = Modifier.padding(16.dp)) {
@@ -110,7 +109,7 @@ fun VideoDetailScreen(
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
-                        
+
                         Row(modifier = Modifier.padding(bottom = 16.dp)) {
                             Text(
                                 text = "作者: ${videoDetail!!.videoInfo.author}",
@@ -118,7 +117,7 @@ fun VideoDetailScreen(
                             )
                             Text(text = "播放量: ${videoDetail!!.videoInfo.playCount}")
                         }
-                        
+
                         Text(
                             text = "视频描述:",
                             fontWeight = FontWeight.Bold,

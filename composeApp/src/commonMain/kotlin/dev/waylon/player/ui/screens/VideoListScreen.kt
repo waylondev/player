@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -20,8 +19,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import dev.waylon.player.model.VideoInfo
 import dev.waylon.player.ui.components.VideoCard
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -59,8 +56,8 @@ fun VideoListScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CircularProgressIndicator(
-                color = androidx.compose.material3.MaterialTheme.colorScheme.primary
-            )
+                    color = androidx.compose.material3.MaterialTheme.colorScheme.primary
+                )
                 Text(
                     text = "加载中...",
                     modifier = Modifier.padding(top = 16.dp),
