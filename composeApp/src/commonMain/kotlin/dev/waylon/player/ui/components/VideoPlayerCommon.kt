@@ -11,22 +11,30 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 /**
- * 视频播放器组件
+ * 视频播放器组件 - 跨平台实现
  */
 @Composable
-fun VideoPlayerComponent(
+expect fun VideoPlayerComponent(
+    modifier: Modifier = Modifier,
+    url: String,
+    isPlaying: Boolean,
+    onPlayStateChange: (Boolean) -> Unit
+)
+
+/**
+ * 视频播放器组件 - 通用实现（用于不支持视频播放的平台或作为降级方案）
+ */
+@Composable
+fun CommonVideoPlayerComponent(
     modifier: Modifier = Modifier,
     url: String,
     isPlaying: Boolean,
     onPlayStateChange: (Boolean) -> Unit
 ) {
     Box(modifier = modifier.fillMaxSize()) {
-        // 使用Compose内置VideoPlayer组件（需要Compose Multiplatform 1.5+）
-        // 注意：实际使用需要添加相应依赖并处理平台差异
         Box(
             modifier = Modifier.fillMaxSize()
                 .background(MaterialTheme.colorScheme.surfaceVariant)
