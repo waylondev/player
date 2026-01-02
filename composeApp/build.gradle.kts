@@ -55,6 +55,7 @@ kotlin {
             
             // 添加Kamel Image依赖用于跨平台图片加载
             implementation(libs.kamel.core)
+            implementation(libs.kamel.image)
             
             // Removed bilibiliApi from commonMain to avoid platform compatibility issues
         }
@@ -62,6 +63,7 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(projects.bilibiliApi) // Add dependency on bilibiliApi module for Android platform
+            implementation(libs.kamel.core.android)
             implementation(libs.kamel.image.android)
         }
         iosMain.dependencies {
@@ -71,6 +73,7 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
             implementation(projects.bilibiliApi) // Add dependency on bilibiliApi module for JVM platform
+            implementation(libs.kamel.core.desktop)
             implementation(libs.kamel.image.desktop)
         }
         jsMain.dependencies {

@@ -59,6 +59,9 @@ kermit-js = { module = "co.touchlab:kermit-js", version.ref = "kermit" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinxSerializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 kamel-core = { module = "media.kamel:kamel-core", version.ref = "kamel" }
+kamel-core-desktop = { module = "media.kamel:kamel-core-desktop", version.ref = "kamel" }
+kamel-core-android = { module = "media.kamel:kamel-core-android", version.ref = "kamel" }
+kamel-image = { module = "media.kamel:kamel-image", version.ref = "kamel" }
 kamel-image-desktop = { module = "media.kamel:kamel-image-desktop", version.ref = "kamel-image-desktop" }
 kamel-image-android = { module = "media.kamel:kamel-image-android", version.ref = "kamel" }
 

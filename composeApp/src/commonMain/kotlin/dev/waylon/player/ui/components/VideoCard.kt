@@ -27,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.waylon.player.model.VideoInfo
 import dev.waylon.player.ui.theme.Corners
+import media.kamel.image.KamelImage
+import media.kamel.image.asyncPainterResource
 
 
 /**
@@ -66,10 +68,43 @@ fun VideoCard(
                         shape = Corners.md
                     )
             ) {
-                // 视频封面占位符
-                Box(
-                    modifier = Modifier.fillMaxSize()
-                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.3f))
+                // 使用KamelImage加载视频封面，配置B站防盗链Referer
+                KamelImage(
+                    resource = asyncPainterResource(
+                        data = video.coverUrl
+                    ) {
+                        // 配置B站防盗链所需的Referer头
+                        headers {
+                            append("Referer", "https://www.bilibili.com/")
+                            append("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+                        }
+                    },
+                    contentDescription = video.title,
+                    modifier = Modifier.fillMaxSize(),
+                    onLoading = {
+                        // 加载中显示进度指示器
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    },
+                    onFailure = {
+                        // 加载失败显示占位符
+                        Box(
+                            modifier = Modifier.fillMaxSize()
+                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "加载失败",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
                 )
                 
                 // 视频时长
