@@ -1,0 +1,98 @@
+package dev.waylon.player.apis.adapter.transformer.video
+
+import dev.waylon.player.apis.adapter.transformer.Transformer
+import dev.waylon.player.model.AuthorInfo
+import dev.waylon.player.model.VideoDetail
+import dev.waylon.player.model.VideoInfo
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.intOrNull
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.longOrNull
+
+/**
+ * Transformer for Bilibili Video Detail API Response
+ * 
+ * Converts Bilibili API response JSON to VideoDetail model
+ */
+object VideoDetailTransformer : Transformer<JsonObject, VideoDetail> {
+
+    override fun transform(input: JsonObject): VideoDetail {
+        // Parse JSON directly to get needed fields
+        val data = input["data"]?.jsonObject ?: return defaultVideoDetail()
+        val stat = data["stat"]?.jsonObject
+        val viewCount = stat?.get("view")?.jsonPrimitive?.longOrNull ?: 0
+        val duration = data["duration"]?.jsonPrimitive?.intOrNull ?: 0
+        val tname = data["tname"]?.jsonPrimitive?.contentOrNull
+        val pubdate = data["pubdate"]?.jsonPrimitive?.longOrNull ?: 0
+        val likeCount = data["like"]?.jsonPrimitive?.longOrNull ?: 0
+        val coinCount = data["coin"]?.jsonPrimitive?.longOrNull ?: 0
+        val favoriteCount = data["favorite"]?.jsonPrimitive?.longOrNull ?: 0
+        val shareCount = data["share"]?.jsonPrimitive?.longOrNull ?: 0
+
+        // Create VideoInfo first
+        val videoInfo = VideoInfo(
+            id = data["bvid"]?.jsonPrimitive?.contentOrNull ?: "",
+            title = data["title"]?.jsonPrimitive?.contentOrNull ?: "",
+            coverUrl = data["pic"]?.jsonPrimitive?.contentOrNull ?: "",
+            author = data["owner"]?.jsonPrimitive?.contentOrNull ?: "",
+            playCount = viewCount,
+            duration = duration,
+            category = tname,
+            publishTime = pubdate
+        )
+
+        // Create AuthorInfo
+        val authorInfo = AuthorInfo(
+            id = data["owner"]?.jsonPrimitive?.contentOrNull ?: "",
+            name = data["owner"]?.jsonPrimitive?.contentOrNull ?: "",
+            avatarUrl = data["face"]?.jsonPrimitive?.contentOrNull ?: "",
+            followerCount = data["follower"]?.jsonPrimitive?.longOrNull ?: 0,
+            bio = data["sign"]?.jsonPrimitive?.contentOrNull
+        )
+
+        // Create VideoDetail
+        return VideoDetail(
+            videoInfo = videoInfo,
+            fullDescription = data["desc"]?.jsonPrimitive?.contentOrNull,
+            likeCount = likeCount,
+            coinCount = coinCount,
+            favoriteCount = favoriteCount,
+            shareCount = shareCount,
+            authorInfo = authorInfo,
+            parts = emptyList(),
+            availableQualities = emptyList()
+        )
+    }
+
+    private fun defaultVideoDetail(): VideoDetail {
+        return VideoDetail(
+            videoInfo = VideoInfo(
+                id = "",
+                title = "",
+                coverUrl = "",
+                author = "",
+                playCount = 0,
+                duration = 0,
+                category = "",
+                publishTime = 0
+            ),
+            fullDescription = "",
+            likeCount = 0,
+            coinCount = 0,
+            favoriteCount = 0,
+            commentCount = 0,
+            shareCount = 0,
+            authorInfo = AuthorInfo(
+                id = "",
+                name = "",
+                avatarUrl = "",
+                followerCount = 0,
+                bio = ""
+            ),
+            parts = emptyList(),
+            availableQualities = emptyList()
+        )
+    }
+}
