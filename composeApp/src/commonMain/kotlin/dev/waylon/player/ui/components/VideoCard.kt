@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -51,15 +52,6 @@ fun VideoCard(
                     .fillMaxWidth()
                     .height(180.dp)
                     .clip(Corners.md)
-                    .background(
-                        brush = Brush.linearGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
-                                MaterialTheme.colorScheme.secondary.copy(alpha = 0.3f),
-                                MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
-                            )
-                        )
-                    )
                     .border(
                         width = 2.dp,
                         brush = Brush.linearGradient(
@@ -72,6 +64,12 @@ fun VideoCard(
                         shape = Corners.md
                     )
             ) {
+                // 使用跨平台图片加载组件
+                ImageLoader(
+                    modifier = Modifier.fillMaxSize(),
+                    url = video.coverUrl,
+                    contentDescription = video.title
+                )
                 // 视频时长
                 Box(
                     modifier = Modifier

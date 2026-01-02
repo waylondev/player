@@ -41,10 +41,6 @@ kotlin {
     }
     
     sourceSets {
-        androidMain.dependencies {
-            implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
-        }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -62,10 +58,18 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            // 添加Coil依赖用于Android平台图片加载
+            implementation("io.coil-kt:coil-compose:2.5.0")
+            implementation("io.coil-kt:coil:2.5.0")
             implementation(projects.bilibiliApi) // Add dependency on bilibiliApi module for Android platform
         }
         iosMain.dependencies {
             implementation(projects.bilibiliApi) // Add dependency on bilibiliApi module for iOS platform
+        }
+        jvmMain.dependencies {
+            implementation(compose.desktop.currentOs)
+            implementation(libs.kotlinx.coroutinesSwing)
+            implementation(projects.bilibiliApi) // Add dependency on bilibiliApi module for JVM platform
         }
         jsMain.dependencies {
             implementation(projects.bilibiliApi) // Add dependency on bilibiliApi module for JS platform
@@ -73,11 +77,6 @@ kotlin {
         // Removed wasmJsMain dependency on bilibiliApi since it's not supported
         commonTest.dependencies {
             implementation(libs.kotlin.test)
-        }
-        jvmMain.dependencies {
-            implementation(compose.desktop.currentOs)
-            implementation(libs.kotlinx.coroutinesSwing)
-            implementation(projects.bilibiliApi) // Add dependency on bilibiliApi module for JVM platform
         }
     }
 }
