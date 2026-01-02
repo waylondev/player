@@ -43,6 +43,7 @@ fun MainScreen() {
                 onTabSelected = {
                     selectedTab = it
                     isRefreshing = true
+                    showVideoDetail = false // 点击标签时关闭视频详情页
                 },
                 onLoginClick = { showLoginQRCode = !showLoginQRCode },
                 onRefreshClick = {

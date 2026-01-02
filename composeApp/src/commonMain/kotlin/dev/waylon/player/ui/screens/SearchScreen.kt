@@ -27,7 +27,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
@@ -35,6 +37,8 @@ import androidx.compose.ui.unit.dp
 import dev.waylon.player.model.VideoInfo
 import dev.waylon.player.service.ServiceProvider
 import dev.waylon.player.ui.components.VideoCard
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 
 /**
  * 搜索视频页面
@@ -49,12 +53,15 @@ fun SearchScreen(
     var searchKeyword by remember { mutableStateOf("") }
     var searchResults by remember { mutableStateOf<List<VideoInfo>>(emptyList()) }
     var isSearching by remember { mutableStateOf(false) }
+    var isLoadingMore by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+    var page by remember { mutableStateOf(1) }
+    var hasMore by remember { mutableStateOf(true) }
     
     // 网格状态，用于加载更多
     val gridState = rememberLazyGridState()
 
-    // 执行搜索
+    // 执行搜索（初始搜索和刷新）
     LaunchedEffect(searchKeyword, isRefreshing) {
         // 如果没有搜索关键词，只在刷新时不做处理
         if (searchKeyword.isBlank() && !isRefreshing) {
@@ -75,12 +82,16 @@ fun SearchScreen(
             try {
                 isSearching = true
                 errorMessage = null
+                page = 1 // 重置页码
+                hasMore = true // 重置是否有更多数据
                 // 调用统一接口搜索视频
                 val result = ServiceProvider.videoService.searchVideos(
                     keyword = searchKeyword,
-                    pageSize = 20
+                    pageSize = 20,
+                    page = page
                 )
                 searchResults = result
+                hasMore = result.size >= 20 // 如果返回的数据小于pageSize，说明没有更多数据了
             } catch (e: Exception) {
                 errorMessage = "搜索失败: ${e.message}"
                 searchResults = emptyList()
@@ -89,6 +100,39 @@ fun SearchScreen(
                 onRefreshComplete()
             }
         }
+    }
+    
+    // 加载更多视频
+    val coroutineScope = rememberCoroutineScope()
+    
+    LaunchedEffect(gridState) {
+        snapshotFlow {
+            val visibleItems = gridState.layoutInfo.visibleItemsInfo
+            if (visibleItems.isNotEmpty()) visibleItems.last().index else -1
+        }
+            .distinctUntilChanged()
+            .collect { lastVisibleIndex: Int ->
+                if (hasMore && !isLoadingMore && !isSearching && lastVisibleIndex >= gridState.layoutInfo.totalItemsCount - 5) {
+                    // 加载更多
+                    coroutineScope.launch {
+                        try {
+                            isLoadingMore = true
+                            page += 1
+                            val result = ServiceProvider.videoService.searchVideos(
+                                keyword = searchKeyword,
+                                pageSize = 20,
+                                page = page
+                            )
+                            searchResults = searchResults + result
+                            hasMore = result.size >= 20
+                        } catch (e: Exception) {
+                            errorMessage = "加载更多失败: ${e.message}"
+                        } finally {
+                            isLoadingMore = false
+                        }
+                    }
+                }
+            }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -196,6 +240,27 @@ fun SearchScreen(
                             onVideoClick(it.id)
                         }
                     )
+                }
+                
+                // 加载更多指示器
+                if (isLoadingMore) {
+                    item {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            CircularProgressIndicator(
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            Text(
+                                text = "加载更多...",
+                                modifier = Modifier.padding(top = 8.dp),
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
                 }
             }
         }
