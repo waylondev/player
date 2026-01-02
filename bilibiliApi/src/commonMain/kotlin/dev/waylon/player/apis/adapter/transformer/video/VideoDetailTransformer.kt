@@ -21,11 +21,11 @@ object VideoDetailTransformer : Transformer<JsonObject, VideoDetail> {
     override fun transform(input: JsonObject): VideoDetail {
         // Parse JSON directly to get needed fields
         val data = input["data"]?.jsonObject ?: return defaultVideoDetail()
-        
+
         // Parse nested objects properly
         val stat = data["stat"]?.jsonObject
         val owner = data["owner"]?.jsonObject
-        
+
         // Get video stats from stat object
         val viewCount = stat?.get("view")?.jsonPrimitive?.longOrNull ?: 0
         val likeCount = stat?.get("like")?.jsonPrimitive?.longOrNull ?: 0
@@ -33,7 +33,7 @@ object VideoDetailTransformer : Transformer<JsonObject, VideoDetail> {
         val favoriteCount = stat?.get("favorite")?.jsonPrimitive?.longOrNull ?: 0
         val shareCount = stat?.get("share")?.jsonPrimitive?.longOrNull ?: 0
         val commentCount = stat?.get("danmaku")?.jsonPrimitive?.longOrNull ?: 0
-        
+
         // Get basic video info
         val duration = data["duration"]?.jsonPrimitive?.intOrNull ?: 0
         val tname = data["tname"]?.jsonPrimitive?.contentOrNull
