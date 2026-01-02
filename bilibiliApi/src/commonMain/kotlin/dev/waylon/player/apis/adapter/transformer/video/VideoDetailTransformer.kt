@@ -21,44 +21,53 @@ object VideoDetailTransformer : Transformer<JsonObject, VideoDetail> {
     override fun transform(input: JsonObject): VideoDetail {
         // Parse JSON directly to get needed fields
         val data = input["data"]?.jsonObject ?: return defaultVideoDetail()
+        
+        // Parse nested objects properly
         val stat = data["stat"]?.jsonObject
+        val owner = data["owner"]?.jsonObject
+        
+        // Get video stats from stat object
         val viewCount = stat?.get("view")?.jsonPrimitive?.longOrNull ?: 0
+        val likeCount = stat?.get("like")?.jsonPrimitive?.longOrNull ?: 0
+        val coinCount = stat?.get("coin")?.jsonPrimitive?.longOrNull ?: 0
+        val favoriteCount = stat?.get("favorite")?.jsonPrimitive?.longOrNull ?: 0
+        val shareCount = stat?.get("share")?.jsonPrimitive?.longOrNull ?: 0
+        val commentCount = stat?.get("danmaku")?.jsonPrimitive?.longOrNull ?: 0
+        
+        // Get basic video info
         val duration = data["duration"]?.jsonPrimitive?.intOrNull ?: 0
         val tname = data["tname"]?.jsonPrimitive?.contentOrNull
         val pubdate = data["pubdate"]?.jsonPrimitive?.longOrNull ?: 0
-        val likeCount = data["like"]?.jsonPrimitive?.longOrNull ?: 0
-        val coinCount = data["coin"]?.jsonPrimitive?.longOrNull ?: 0
-        val favoriteCount = data["favorite"]?.jsonPrimitive?.longOrNull ?: 0
-        val shareCount = data["share"]?.jsonPrimitive?.longOrNull ?: 0
 
         // Create VideoInfo first
         val videoInfo = VideoInfo(
             id = data["bvid"]?.jsonPrimitive?.contentOrNull ?: "",
             title = data["title"]?.jsonPrimitive?.contentOrNull ?: "",
             coverUrl = data["pic"]?.jsonPrimitive?.contentOrNull ?: "",
-            author = data["owner"]?.jsonPrimitive?.contentOrNull ?: "",
+            author = owner?.get("name")?.jsonPrimitive?.contentOrNull ?: "",
             playCount = viewCount,
             duration = duration,
             category = tname,
             publishTime = pubdate
         )
 
-        // Create AuthorInfo
+        // Create AuthorInfo from owner object
         val authorInfo = AuthorInfo(
-            id = data["owner"]?.jsonPrimitive?.contentOrNull ?: "",
-            name = data["owner"]?.jsonPrimitive?.contentOrNull ?: "",
-            avatarUrl = data["face"]?.jsonPrimitive?.contentOrNull ?: "",
-            followerCount = data["follower"]?.jsonPrimitive?.longOrNull ?: 0,
-            bio = data["sign"]?.jsonPrimitive?.contentOrNull
+            id = owner?.get("mid")?.jsonPrimitive?.contentOrNull ?: "",
+            name = owner?.get("name")?.jsonPrimitive?.contentOrNull ?: "",
+            avatarUrl = owner?.get("face")?.jsonPrimitive?.contentOrNull ?: "",
+            followerCount = 0L,
+            bio = null
         )
 
-        // Create VideoDetail
+        // Create VideoDetail with all required fields
         return VideoDetail(
             videoInfo = videoInfo,
             fullDescription = data["desc"]?.jsonPrimitive?.contentOrNull,
             likeCount = likeCount,
             coinCount = coinCount,
             favoriteCount = favoriteCount,
+            commentCount = commentCount,
             shareCount = shareCount,
             authorInfo = authorInfo,
             parts = emptyList(),

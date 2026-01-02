@@ -50,32 +50,25 @@ fun TopAppBar(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // 首页推荐
-                NavMenuItem(
-                    label = "推荐",
-                    isSelected = selectedTab == 0,
-                    onClick = { onTabSelected(0) }
-                )
+            NavMenuItem(
+                label = "推荐",
+                isSelected = selectedTab == 0,
+                onClick = { onTabSelected(0) }
+            )
 
-                // 热门视频
-                NavMenuItem(
-                    label = "热门",
-                    isSelected = selectedTab == 1,
-                    onClick = { onTabSelected(1) }
-                )
+            // 排行榜
+            NavMenuItem(
+                label = "排行",
+                isSelected = selectedTab == 1,
+                onClick = { onTabSelected(1) }
+            )
 
-                // 排行榜
-                NavMenuItem(
-                    label = "排行",
-                    isSelected = selectedTab == 2,
-                    onClick = { onTabSelected(2) }
-                )
-
-                // 搜索
-                NavMenuItem(
-                    label = "搜索",
-                    isSelected = selectedTab == 3,
-                    onClick = { onTabSelected(3) }
-                )
+            // 搜索
+            NavMenuItem(
+                label = "搜索",
+                isSelected = selectedTab == 2,
+                onClick = { onTabSelected(2) }
+            )
             }
         },
         navigationIcon = {
