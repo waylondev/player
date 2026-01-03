@@ -30,25 +30,27 @@ object VideoStreamTransformer : Transformer<JsonObject, VideoStream> {
             val message = input["message"]?.jsonPrimitive?.contentOrNull ?: "Unknown error"
             throw VideoStreamTransformException("API returned error: $message (code: $code)")
         }
-        
+
         val data = input["data"]?.jsonObject
             ?: throw VideoStreamTransformException("Missing data field in API response")
-        
+
         // Parse basic video information
         val videoId = data["bvid"]?.jsonPrimitive?.contentOrNull ?: ""
         val quality = data["quality"]?.jsonPrimitive?.intOrNull ?: 64
         val format = data["format"]?.jsonPrimitive?.contentOrNull ?: ""
         val timelength = data["timelength"]?.jsonPrimitive?.longOrNull ?: 0
-        
+
         // Parse available formats and qualities
         val acceptFormats = data["accept_format"]?.jsonPrimitive?.contentOrNull ?: ""
-        val acceptDescriptions = data["accept_description"]?.jsonArray?.mapNotNull { it.jsonPrimitive.contentOrNull } ?: emptyList()
-        val acceptQualities = data["accept_quality"]?.jsonArray?.mapNotNull { it.jsonPrimitive.intOrNull } ?: emptyList()
-        
+        val acceptDescriptions =
+            data["accept_description"]?.jsonArray?.mapNotNull { it.jsonPrimitive.contentOrNull } ?: emptyList()
+        val acceptQualities =
+            data["accept_quality"]?.jsonArray?.mapNotNull { it.jsonPrimitive.intOrNull } ?: emptyList()
+
         // Parse video streams based on format (MP4/FLV or DASH)
         val streams = parseVideoStreams(data)
         val audioStreams = parseAudioStreams(data)
-        
+
         return VideoStream(
             videoId = videoId,
             selectedQualityId = quality,
@@ -63,7 +65,7 @@ object VideoStreamTransformer : Transformer<JsonObject, VideoStream> {
         if (dashStreams.isNotEmpty()) {
             return dashStreams
         }
-        
+
         // Fallback to MP4/FLV format (old format)
         return parseDurlVideoStreams(data)
     }
@@ -71,7 +73,7 @@ object VideoStreamTransformer : Transformer<JsonObject, VideoStream> {
     private fun parseDashVideoStreams(data: JsonObject): List<StreamItem> {
         val dash = data["dash"]?.jsonObject ?: return emptyList()
         val videoStreams = dash["video"]?.jsonArray ?: return emptyList()
-        
+
         return videoStreams.mapNotNull { videoItem ->
             val video = videoItem.jsonObject
             parseDashVideoStream(video)
@@ -81,24 +83,24 @@ object VideoStreamTransformer : Transformer<JsonObject, VideoStream> {
     private fun parseDashVideoStream(video: JsonObject): StreamItem? {
         val baseUrl = video["baseUrl"]?.jsonPrimitive?.contentOrNull ?: return null
         val backupUrls = video["backupUrl"]?.jsonArray?.mapNotNull { it.jsonPrimitive.contentOrNull } ?: emptyList()
-        
+
         // Use primary URL, fallback to first backup URL if primary is unavailable
         val url = baseUrl.ifEmpty { backupUrls.firstOrNull() ?: return null }
-        
+
         val qualityId = video["id"]?.jsonPrimitive?.intOrNull ?: return null
         val codecs = video["codecs"]?.jsonPrimitive?.contentOrNull ?: ""
         val mimeType = video["mimeType"]?.jsonPrimitive?.contentOrNull ?: ""
-        
+
         val width = video["width"]?.jsonPrimitive?.intOrNull ?: return null
         val height = video["height"]?.jsonPrimitive?.intOrNull ?: return null
         val frameRate = video["frameRate"]?.jsonPrimitive?.contentOrNull ?: ""
-        
+
         val bandwidth = video["bandwidth"]?.jsonPrimitive?.intOrNull ?: 0
         val codecid = video["codecid"]?.jsonPrimitive?.intOrNull ?: 7 // Default to AVC (H.264)
-        
+
         val qualityName = getQualityDisplayName(qualityId, codecs, mimeType)
         val (format, codec) = parseFormatAndCodec(codecs, mimeType, codecid)
-        
+
         return StreamItem(
             qualityId = qualityId,
             qualityName = qualityName,
@@ -112,19 +114,20 @@ object VideoStreamTransformer : Transformer<JsonObject, VideoStream> {
 
     private fun parseDurlVideoStreams(data: JsonObject): List<StreamItem> {
         val durl = data["durl"]?.jsonArray ?: return emptyList()
-        
+
         return durl.mapNotNull { durlItem ->
             val durlObject = durlItem.jsonObject
             val url = durlObject["url"]?.jsonPrimitive?.contentOrNull ?: return@mapNotNull null
-            val backupUrls = durlObject["backup_url"]?.jsonArray?.mapNotNull { it.jsonPrimitive.contentOrNull } ?: emptyList()
-            
+            val backupUrls =
+                durlObject["backup_url"]?.jsonArray?.mapNotNull { it.jsonPrimitive.contentOrNull } ?: emptyList()
+
             val length = durlObject["length"]?.jsonPrimitive?.longOrNull ?: 0
             val size = durlObject["size"]?.jsonPrimitive?.longOrNull ?: 0
-            
+
             // Use actual quality information from the API response
             val qualityId = data["quality"]?.jsonPrimitive?.intOrNull ?: 64
             val formatStr = data["format"]?.jsonPrimitive?.contentOrNull ?: ""
-            
+
             // Get actual resolution from API if available, otherwise estimate
             val width = data["width"]?.jsonPrimitive?.intOrNull
             val height = data["height"]?.jsonPrimitive?.intOrNull
@@ -133,10 +136,10 @@ object VideoStreamTransformer : Transformer<JsonObject, VideoStream> {
             } else {
                 estimateResolution(qualityId)
             }
-            
+
             val qualityName = getQualityDisplayName(qualityId, "", formatStr)
             val (format, codec) = parseFormatAndCodec("", formatStr, 7) // Default to AVC for MP4/FLV
-            
+
             StreamItem(
                 qualityId = qualityId,
                 qualityName = qualityName,
@@ -152,17 +155,17 @@ object VideoStreamTransformer : Transformer<JsonObject, VideoStream> {
     private fun parseAudioStreams(data: JsonObject): List<AudioStreamItem> {
         val dash = data["dash"]?.jsonObject ?: return emptyList()
         val audioStreams = dash["audio"]?.jsonArray ?: return emptyList()
-        
+
         return audioStreams.mapNotNull { audioItem ->
             val audio = audioItem.jsonObject
             val baseUrl = audio["baseUrl"]?.jsonPrimitive?.contentOrNull ?: return@mapNotNull null
             val backupUrls = audio["backupUrl"]?.jsonArray?.mapNotNull { it.jsonPrimitive.contentOrNull } ?: emptyList()
-            
+
             val url = baseUrl.ifEmpty { backupUrls.firstOrNull() ?: return@mapNotNull null }
             val bandwidth = audio["bandwidth"]?.jsonPrimitive?.intOrNull ?: 0
             val size = audio["size"]?.jsonPrimitive?.longOrNull
             val audioId = audio["id"]?.jsonPrimitive?.intOrNull ?: return@mapNotNull null
-            
+
             AudioStreamItem(
                 qualityId = audioId,
                 qualityName = getAudioQualityDisplayName(audioId, bandwidth),
@@ -222,7 +225,7 @@ object VideoStreamTransformer : Transformer<JsonObject, VideoStream> {
                 else -> Pair("mp4", "unknown")
             }
         }
-        
+
         // Parse from codecid
         return when (codecid) {
             7 -> Pair("mp4", "h264")  // AVC

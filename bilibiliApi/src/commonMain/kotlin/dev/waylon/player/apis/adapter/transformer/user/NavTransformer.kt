@@ -41,10 +41,10 @@ object NavTransformer : Transformer<JsonObject, PlatformContext> {
         val name = data["uname"]?.jsonPrimitive?.contentOrNull ?: return null
         val face = data["face"]?.jsonPrimitive?.contentOrNull ?: return null
         val sign = data["sign"]?.jsonPrimitive?.contentOrNull
-        
+
         return dev.waylon.player.model.UserInfo(
-            id = mid.toString(),
-            name = name,
+            userId = mid.toString(),
+            userName = name,
             avatarUrl = face,
             bio = sign
         )
