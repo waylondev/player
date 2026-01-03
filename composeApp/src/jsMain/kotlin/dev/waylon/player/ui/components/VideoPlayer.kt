@@ -14,7 +14,7 @@ actual fun VideoPlayerComponent(
     onPlayStateChange: (Boolean) -> Unit
 ) {
     // JS平台使用CommonVideoPlayerComponent作为实现
-    // 在实际项目中，可以使用HTML5 Video元素或其他JS视频播放库
+    // 在实际项目中，可以集成HTML5 video或其他JS视频播放库
     CommonVideoPlayerComponent(
         modifier = modifier,
         url = url,

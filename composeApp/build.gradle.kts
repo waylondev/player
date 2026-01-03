@@ -63,6 +63,10 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(projects.bilibiliApi) // Add dependency on bilibiliApi module for Android platform
+            // ExoPlayer dependencies for Android video playback
+            implementation("androidx.media3:media3-exoplayer:1.3.1")
+            implementation("androidx.media3:media3-ui:1.3.1")
+            implementation("androidx.media3:media3-session:1.3.1")
         }
         iosMain.dependencies {
             implementation(projects.bilibiliApi) // Add dependency on bilibiliApi module for iOS platform

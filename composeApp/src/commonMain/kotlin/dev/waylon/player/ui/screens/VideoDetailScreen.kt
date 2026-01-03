@@ -92,7 +92,8 @@ fun VideoDetailScreen(
 
                     VideoPlayerComponent(
                         modifier = Modifier.height(300.dp).fillMaxWidth(),
-                        url = videoDetail!!.videoInfo.coverUrl, // 这里应该是视频播放地址，暂时使用封面URL
+                        // 使用示例视频地址进行测试
+                        url = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
                         isPlaying = isPlaying,
                         onPlayStateChange = { newState ->
                             isPlaying = newState

@@ -1,17 +1,7 @@
 package dev.waylon.player.ui.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 
 /**
  * 视频播放器组件 - JVM平台实现
@@ -23,42 +13,12 @@ actual fun VideoPlayerComponent(
     isPlaying: Boolean,
     onPlayStateChange: (Boolean) -> Unit
 ) {
-    Box(modifier = modifier.fillMaxSize()) {
-        Box(
-            modifier = Modifier.fillMaxSize()
-                .background(MaterialTheme.colorScheme.surfaceVariant)
-                .clickable {
-                    onPlayStateChange(!isPlaying)
-                }
-        ) {
-            Text(
-                text = "JVM视频播放器",
-                modifier = Modifier.align(Alignment.TopCenter)
-                    .padding(16.dp),
-                style = MaterialTheme.typography.headlineSmall
-            )
-
-            Text(
-                text = "播放地址: $url",
-                modifier = Modifier.align(Alignment.Center),
-                style = MaterialTheme.typography.bodyMedium
-            )
-
-            Text(
-                text = if (isPlaying) "播放中" else "已暂停",
-                modifier = Modifier.align(Alignment.BottomCenter)
-                    .padding(16.dp),
-                style = MaterialTheme.typography.bodyMedium
-            )
-
-            // 播放状态指示器
-            if (isPlaying) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center)
-                        .padding(16.dp),
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-        }
-    }
+    // JVM平台使用CommonVideoPlayerComponent作为实现
+    // 在实际项目中，可以集成JavaFX Media或其他JVM视频播放库
+    CommonVideoPlayerComponent(
+        modifier = modifier,
+        url = url,
+        isPlaying = isPlaying,
+        onPlayStateChange = onPlayStateChange
+    )
 }
