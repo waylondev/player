@@ -71,28 +71,7 @@ fun VideoCard(
                 KamelImage(
                     resource = asyncPainterResource(data = video.coverUrl),
                     contentDescription = video.title,
-                    modifier = Modifier.fillMaxSize(),
-                    onLoading = { painter, _ ->
-                        // Show loading state
-                        Box(
-                            modifier = Modifier.fillMaxSize()
-                                .background(MaterialTheme.colorScheme.surfaceVariant)
-                        )
-                    },
-                    onFailure = { exception ->
-                        // Show error state with fallback
-                        Box(
-                            modifier = Modifier.fillMaxSize()
-                                .background(MaterialTheme.colorScheme.errorContainer),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "Failed to load image",
-                                color = MaterialTheme.colorScheme.onErrorContainer,
-                                fontSize = 12.sp
-                            )
-                        }
-                    }
+                    modifier = Modifier.fillMaxSize()
                 )
 
                 // Video duration
