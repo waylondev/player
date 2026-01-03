@@ -19,8 +19,10 @@ object HotRankingTransformer : Transformer<JsonObject, List<VideoInfo>> {
 
     override fun transform(input: JsonObject): List<VideoInfo> {
         // Parse JSON directly to get needed fields
-        val data = input["data"]?.jsonObject ?: return emptyList()
-        val list = data["list"]?.jsonArray ?: return emptyList()
+        val data = input["data"]?.jsonObject
+            ?: throw HotRankingTransformException("Missing data field in API response")
+        val list = data["list"]?.jsonArray
+            ?: throw HotRankingTransformException("Missing list field in API response")
 
         // Extract needed fields from JSON
         return list.mapNotNull { itemJson ->

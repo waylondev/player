@@ -161,7 +161,7 @@ object VideoStreamTransformer : Transformer<JsonObject, VideoStream> {
             val url = baseUrl.ifEmpty { backupUrls.firstOrNull() ?: return@mapNotNull null }
             val bandwidth = audio["bandwidth"]?.jsonPrimitive?.intOrNull ?: 0
             val size = audio["size"]?.jsonPrimitive?.longOrNull
-            val audioId = audio["id"]?.jsonPrimitive?.intOrNull ?: 30280 // Default to 30280 (普通音质)
+            val audioId = audio["id"]?.jsonPrimitive?.intOrNull ?: return@mapNotNull null
             
             AudioStreamItem(
                 qualityId = audioId,

@@ -21,12 +21,8 @@ object QRCodeGenerateTransformer : Transformer<JsonObject, QRCodeGenerateRespons
         val code = input["code"]?.jsonPrimitive?.intOrNull ?: -1
         val message = input["message"]?.jsonPrimitive?.contentOrNull ?: ""
         val ttl = input["ttl"]?.jsonPrimitive?.intOrNull ?: 0
-        val data = input["data"]?.jsonObject ?: return QRCodeGenerateResponse(
-            code,
-            message,
-            ttl,
-            QRCodeGenerateData("", "")
-        )
+        val data = input["data"]?.jsonObject
+            ?: throw QRCodeGenerateTransformException("Missing data field in API response")
 
         // Parse QR code generate data
         val url = data["url"]?.jsonPrimitive?.contentOrNull ?: ""

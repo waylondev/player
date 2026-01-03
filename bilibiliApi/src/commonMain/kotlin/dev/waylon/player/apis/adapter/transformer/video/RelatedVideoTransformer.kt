@@ -19,7 +19,8 @@ object RelatedVideoTransformer : Transformer<JsonObject, List<VideoInfo>> {
 
     override fun transform(input: JsonObject): List<VideoInfo> {
         // Parse JSON directly to get needed fields
-        val data = input["data"]?.jsonArray ?: return emptyList()
+        val data = input["data"]?.jsonArray
+            ?: throw RelatedVideoTransformException("Missing data field in API response")
 
         // Extract needed fields from JSON
         return data.mapNotNull { itemJson ->
