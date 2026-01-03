@@ -89,16 +89,61 @@ fun VideoDetailScreen(
                 item {
                     // Video playback area
                     var isPlaying by remember { mutableStateOf(false) }
+                    var videoStreamUrl by remember { mutableStateOf<String?>(null) }
+                    var streamLoading by remember { mutableStateOf(false) }
+                    var streamError by remember { mutableStateOf<String?>(null) }
 
-                    VideoPlayerComponent(
-                        modifier = Modifier.height(300.dp).fillMaxWidth(),
-                        // Use sample video URL for testing
-                        url = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-                        isPlaying = isPlaying,
-                        onPlayStateChange = { newState ->
-                            isPlaying = newState
+                    // Load video stream URL
+                    LaunchedEffect(videoDetail) {
+                        if (videoDetail != null && videoStreamUrl == null) {
+                            streamLoading = true
+                            streamError = null
+                            try {
+                                // Get video stream using the video service
+                                val videoStream = videoService.getVideoStream(
+                                    videoId = videoDetail!!.videoInfo.id,
+                                    cid = videoDetail!!.videoInfo.cid ?: 0
+                                )
+                                videoStreamUrl = videoStream.streams.firstOrNull()?.url
+                            } catch (e: Exception) {
+                                streamError = "Failed to load video stream: ${e.message}"
+                            } finally {
+                                streamLoading = false
+                            }
                         }
-                    )
+                    }
+
+                    if (streamLoading) {
+                        Box(
+                            modifier = Modifier.height(300.dp).fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    } else if (streamError != null) {
+                        Box(
+                            modifier = Modifier.height(300.dp).fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(text = streamError ?: "Unknown error")
+                        }
+                    } else if (videoStreamUrl != null) {
+                        VideoPlayerComponent(
+                            modifier = Modifier.height(300.dp).fillMaxWidth(),
+                            url = videoStreamUrl!!,
+                            isPlaying = isPlaying,
+                            onPlayStateChange = { newState ->
+                                isPlaying = newState
+                            }
+                        )
+                    } else {
+                        Box(
+                            modifier = Modifier.height(300.dp).fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(text = "No video stream available")
+                        }
+                    }
                 }
 
                 item {

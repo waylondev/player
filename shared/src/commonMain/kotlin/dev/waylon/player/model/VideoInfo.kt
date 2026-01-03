@@ -53,5 +53,10 @@ data class VideoInfo(
     /**
      * Video description (short version)
      */
-    val description: String? = null
+    val description: String? = null,
+
+    /**
+     * Video CID (Content ID) - required for video playback
+     */
+    val cid: Int? = null
 )

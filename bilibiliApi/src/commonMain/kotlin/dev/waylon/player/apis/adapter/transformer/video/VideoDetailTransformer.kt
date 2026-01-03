@@ -38,6 +38,7 @@ object VideoDetailTransformer : Transformer<JsonObject, VideoDetail> {
         val duration = data["duration"]?.jsonPrimitive?.intOrNull ?: 0
         val tname = data["tname"]?.jsonPrimitive?.contentOrNull
         val pubdate = data["pubdate"]?.jsonPrimitive?.longOrNull ?: 0
+        val cid = data["cid"]?.jsonPrimitive?.intOrNull ?: 0
 
         // Create VideoInfo first
         val videoInfo = VideoInfo(
@@ -48,7 +49,8 @@ object VideoDetailTransformer : Transformer<JsonObject, VideoDetail> {
             playCount = viewCount,
             duration = duration,
             category = tname,
-            publishTime = pubdate
+            publishTime = pubdate,
+            cid = cid
         )
 
         // Create AuthorInfo from owner object
