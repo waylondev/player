@@ -5,6 +5,4 @@ package dev.waylon.player.apis.features.user.nav
  * 
  * Request for Bilibili nav API to get user navigation information and WBI keys
  */
-class NavRequest(
-    // No parameters needed for nav API
-)
+class NavRequest

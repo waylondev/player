@@ -15,7 +15,7 @@ object NavTransformer : Transformer<JsonObject, PlatformContext> {
 
     override fun transform(input: JsonObject): PlatformContext {
         // Parse JSON directly to get needed fields
-        val data = input["data"]?.jsonObject
+        input["data"]?.jsonObject
 
         // For now, return an empty PlatformContext
         // In a real implementation, we would parse the Bilibili-specific nav data

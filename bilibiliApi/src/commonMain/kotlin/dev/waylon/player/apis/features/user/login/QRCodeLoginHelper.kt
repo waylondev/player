@@ -1,5 +1,7 @@
 package dev.waylon.player.apis.features.user.login
 
+import dev.waylon.player.apis.common.extensions.executeAndTransform
+import dev.waylon.player.apis.common.extensions.parseAs
 import dev.waylon.player.apis.features.user.login.generate.QRCodeGenerateRequest
 import dev.waylon.player.apis.features.user.login.generate.QRCodeGenerateResponse
 import dev.waylon.player.apis.features.user.login.generate.QRCodeGenerateService
@@ -21,7 +23,9 @@ object QRCodeLoginHelper {
      * @return The QR code generate response containing the URL and qrcode_key
      */
     suspend fun generateQRCode(): QRCodeGenerateResponse {
-        return QRCodeGenerateService.generateQRCode(QRCodeGenerateRequest())
+        return QRCodeGenerateService.executeAndTransform(QRCodeGenerateRequest()) { response ->
+            response.parseAs<QRCodeGenerateResponse>()
+        }
     }
 
     /**
@@ -31,7 +35,9 @@ object QRCodeLoginHelper {
      * @return The QR code poll response containing the login status
      */
     suspend fun pollQRCodeStatus(qrcodeKey: String): QRCodePollResponse {
-        return QRCodePollService.pollQRCodeStatus(QRCodePollRequest(qrcodeKey))
+        return QRCodePollService.executeAndTransform(QRCodePollRequest(qrcodeKey)) { response ->
+            response.parseAs<QRCodePollResponse>()
+        }
     }
 
     /**
@@ -41,6 +47,6 @@ object QRCodeLoginHelper {
      * @return The QR code poll status enum
      */
     fun getQRCodeStatus(pollResponse: QRCodePollResponse): QRCodePollStatus {
-        return QRCodePollStatus.values().find { it.code == pollResponse.data.code } ?: QRCodePollStatus.NOT_SCANNED
+        return QRCodePollStatus.entries.find { it.code == pollResponse.data.code } ?: QRCodePollStatus.NOT_SCANNED
     }
 }

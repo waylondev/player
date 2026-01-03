@@ -5,6 +5,4 @@ package dev.waylon.player.apis.features.user.login.generate
  * 
  * Request for generating Bilibili login QR code
  */
-class QRCodeGenerateRequest(
-    // No parameters needed for QR code generation
-)
+class QRCodeGenerateRequest

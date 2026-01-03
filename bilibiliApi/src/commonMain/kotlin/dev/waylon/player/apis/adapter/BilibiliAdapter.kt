@@ -8,6 +8,8 @@ import dev.waylon.player.apis.adapter.transformer.video.RelatedVideoTransformer
 import dev.waylon.player.apis.adapter.transformer.video.VideoDetailTransformer
 import dev.waylon.player.apis.adapter.transformer.video.VideoStreamTransformer
 import dev.waylon.player.apis.common.extensions.executeAndTransform
+import dev.waylon.player.apis.common.extensions.parseAs
+import dev.waylon.player.apis.common.extensions.toJsonObject
 import dev.waylon.player.apis.features.home.ranking.HotRankingRequest
 import dev.waylon.player.apis.features.home.ranking.HotRankingService
 import dev.waylon.player.apis.features.home.recommend.HomeRecommendRequest
@@ -37,7 +39,6 @@ import dev.waylon.player.model.VideoDetail
 import dev.waylon.player.model.VideoInfo
 import dev.waylon.player.model.VideoStream
 import dev.waylon.player.service.VideoPlatformService
-import kotlinx.serialization.json.JsonObject
 
 /**
  * Bilibili Platform Adapter
@@ -56,8 +57,9 @@ class BilibiliAdapter : VideoPlatformService {
             fresh_idx = page
         )
 
-        return HomeRecommendationService.executeAndTransform(request) { root ->
-            HomeRecommendationsTransformer.transform(root)
+        return HomeRecommendationService.executeAndTransform(request) { response ->
+            val jsonObject = response.toJsonObject()
+            HomeRecommendationsTransformer.transform(jsonObject)
         }
     }
 
@@ -65,8 +67,9 @@ class BilibiliAdapter : VideoPlatformService {
         videoId: String
     ): VideoDetail {
         val request = VideoDetailRequest(bvid = videoId)
-        return VideoDetailService.executeAndTransform(request) { root ->
-            VideoDetailTransformer.transform(root)
+        return VideoDetailService.executeAndTransform(request) { response ->
+            val jsonObject = response.toJsonObject()
+            VideoDetailTransformer.transform(jsonObject)
         }
     }
 
@@ -78,8 +81,8 @@ class BilibiliAdapter : VideoPlatformService {
         val request = VideoStreamRequest(
             bvid = videoId, cid = cid, qn = qualityId
         )
-        return VideoStreamService.executeAndTransform(request) { root ->
-            VideoStreamTransformer.transform(root)
+        return VideoStreamService.executeAndTransform(request) { response ->
+            VideoStreamTransformer.transform(response.toJsonObject())
         }
     }
 
@@ -101,8 +104,8 @@ class BilibiliAdapter : VideoPlatformService {
             day = day
         )
 
-        return HotRankingService.executeAndTransform(request) { root ->
-            HotRankingTransformer.transform(root)
+        return HotRankingService.executeAndTransform(request) { response ->
+            HotRankingTransformer.transform(response.toJsonObject())
         }
     }
 
@@ -123,8 +126,8 @@ class BilibiliAdapter : VideoPlatformService {
             keyword = keyword,
             page = page
         )
-        return AllSearchService.executeAndTransform(request) { root ->
-            AllSearchTransformer.transform(root)
+        return AllSearchService.executeAndTransform(request) { response ->
+            AllSearchTransformer.transform(response.toJsonObject())
         }
     }
 
@@ -143,8 +146,8 @@ class BilibiliAdapter : VideoPlatformService {
             bvid = videoId
         )
 
-        return RelatedVideoService.executeAndTransform(request) { root ->
-            RelatedVideoTransformer.transform(root)
+        return RelatedVideoService.executeAndTransform(request) { response ->
+            RelatedVideoTransformer.transform(response.toJsonObject())
         }
     }
 
@@ -156,8 +159,8 @@ class BilibiliAdapter : VideoPlatformService {
     override suspend fun getPlatformContext(): PlatformContext {
         val request = NavRequest()
 
-        return NavService.executeAndTransform(request) { root ->
-            NavTransformer.transform(root)
+        return NavService.executeAndTransform(request) { response ->
+            NavTransformer.transform(response.toJsonObject())
         }
     }
 
@@ -171,8 +174,8 @@ class BilibiliAdapter : VideoPlatformService {
         val request = QRCodeGenerateRequest()
 
         // Call Bilibili API using extension function
-        val bilibiliResponse = QRCodeGenerateService.executeAndTransform(request) { root ->
-            root.body<QRCodeGenerateResponse>()
+        val bilibiliResponse = QRCodeGenerateService.executeAndTransform(request) { response ->
+            response.parseAs<QRCodeGenerateResponse>()
         }
 
         // Convert to common QRCodeGenerateResult
@@ -204,8 +207,8 @@ class BilibiliAdapter : VideoPlatformService {
         val request = QRCodePollRequest(qrcodeKey = qrCodeKey)
 
         // Call Bilibili API using extension function
-        val bilibiliResponse = QRCodePollService.executeAndTransform(request) { root ->
-            root.body<QRCodePollResponse>()
+        val bilibiliResponse = QRCodePollService.executeAndTransform(request) { response ->
+            response.parseAs<QRCodePollResponse>()
         }
 
         // Map Bilibili status code to common QRCodeLoginStatus

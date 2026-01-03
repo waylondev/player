@@ -13,17 +13,17 @@ data class VideoStream(
      * Video ID
      */
     val videoId: String,
-    
+
     /**
      * Currently selected video quality ID
      */
     val selectedQualityId: Int,
-    
+
     /**
      * Video stream list
      */
     val streams: List<StreamItem>,
-    
+
     /**
      * Audio stream list (if separated from video stream)
      */
@@ -39,37 +39,37 @@ data class StreamItem(
      * Stream quality ID
      */
     val qualityId: Int,
-    
+
     /**
      * Stream quality name
      */
     val qualityName: String,
-    
+
     /**
      * Video resolution (width x height)
      */
     val resolution: Resolution,
-    
+
     /**
      * Video bitrate (kbps)
      */
     val bitrate: Int,
-    
+
     /**
      * Video format
      */
     val format: String,
-    
+
     /**
      * Video stream URL
      */
     val url: String,
-    
+
     /**
      * Stream type (e.g., mp4, flv, etc.)
      */
     val type: String,
-    
+
     /**
      * Stream size (bytes)
      */
@@ -85,27 +85,27 @@ data class AudioStreamItem(
      * Audio quality ID
      */
     val qualityId: Int,
-    
+
     /**
      * Audio quality name
      */
     val qualityName: String,
-    
+
     /**
      * Audio bitrate (kbps)
      */
     val bitrate: Int,
-    
+
     /**
      * Audio format
      */
     val format: String,
-    
+
     /**
      * Audio stream URL
      */
     val url: String,
-    
+
     /**
      * Audio stream size (bytes)
      */
@@ -121,7 +121,7 @@ data class Resolution(
      * Width
      */
     val width: Int,
-    
+
     /**
      * Height
      */

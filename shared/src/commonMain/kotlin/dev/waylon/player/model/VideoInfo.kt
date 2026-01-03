@@ -14,42 +14,42 @@ data class VideoInfo(
      * e.g., Bilibili's bvid (BV1xx411c7mX), YouTube's videoId
      */
     val id: String,
-    
+
     /**
      * Video title
      */
     val title: String,
-    
+
     /**
      * Video cover URL
      */
     val coverUrl: String,
-    
+
     /**
      * Video author/UP name
      */
     val author: String,
-    
+
     /**
      * Play count
      */
     val playCount: Long,
-    
+
     /**
      * Video duration (seconds)
      */
     val duration: Int,
-    
+
     /**
      * Video category/partition
      */
     val category: String? = null,
-    
+
     /**
      * Video publish timestamp (seconds)
      */
     val publishTime: Long? = null,
-    
+
     /**
      * Video description (short version)
      */

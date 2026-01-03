@@ -13,47 +13,47 @@ data class VideoDetail(
      * Video basic information
      */
     val videoInfo: VideoInfo,
-    
+
     /**
      * Video full description
      */
     val fullDescription: String? = null,
-    
+
     /**
      * Like count
      */
     val likeCount: Long = 0,
-    
+
     /**
      * Coin count (virtual currency for Bilibili)
      */
     val coinCount: Long = 0,
-    
+
     /**
      * Favorite count
      */
     val favoriteCount: Long = 0,
-    
+
     /**
      * Comment count
      */
     val commentCount: Long = 0,
-    
+
     /**
      * Share count
      */
     val shareCount: Long = 0,
-    
+
     /**
      * UP/Author detailed information
      */
     val authorInfo: AuthorInfo? = null,
-    
+
     /**
      * Video parts information (for videos with multiple segments)
      */
     val parts: List<VideoPart> = emptyList(),
-    
+
     /**
      * List of available video qualities
      */
@@ -69,22 +69,22 @@ data class AuthorInfo(
      * Author ID
      */
     val id: String,
-    
+
     /**
      * Author name
      */
     val name: String,
-    
+
     /**
      * Author avatar URL
      */
     val avatarUrl: String,
-    
+
     /**
      * Author follower count
      */
     val followerCount: Long? = null,
-    
+
     /**
      * Author biography
      */
@@ -100,17 +100,17 @@ data class VideoPart(
      * Part ID
      */
     val id: String,
-    
+
     /**
      * Part title
      */
     val title: String,
-    
+
     /**
      * Part duration (seconds)
      */
     val duration: Int,
-    
+
     /**
      * Part cover URL
      */
@@ -126,12 +126,12 @@ data class VideoQuality(
      * Quality ID (e.g., qn value for Bilibili)
      */
     val id: Int,
-    
+
     /**
      * Quality name (e.g., 1080p, 720p, etc.)
      */
     val name: String,
-    
+
     /**
      * Whether this is the default quality
      */

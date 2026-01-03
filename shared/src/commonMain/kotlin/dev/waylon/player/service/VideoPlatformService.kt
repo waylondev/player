@@ -3,7 +3,6 @@ package dev.waylon.player.service
 import dev.waylon.player.model.PlatformContext
 import dev.waylon.player.model.QRCodeGenerateResult
 import dev.waylon.player.model.QRCodePollResult
-import dev.waylon.player.model.UserInfo
 import dev.waylon.player.model.VideoDetail
 import dev.waylon.player.model.VideoInfo
 import dev.waylon.player.model.VideoStream
@@ -50,7 +49,7 @@ interface VideoPlatformService {
         qualityId: Int = 80,
         cid: Int = 80
     ): VideoStream
-    
+
     /**
      * Get hot ranking videos
      * 
@@ -62,7 +61,7 @@ interface VideoPlatformService {
         rid: Int = 0,
         day: Int = 3
     ): List<VideoInfo>
-    
+
     /**
      * Search videos
      * 
@@ -76,7 +75,7 @@ interface VideoPlatformService {
         page: Int = 1,
         pageSize: Int = 20
     ): List<VideoInfo>
-    
+
     /**
      * Get related videos
      * 
@@ -88,21 +87,21 @@ interface VideoPlatformService {
         videoId: String,
         pageSize: Int = 20
     ): List<VideoInfo>
-    
+
     /**
      * Get platform context information
      * 
      * @return PlatformContext with user info and platform configuration
      */
     suspend fun getPlatformContext(): PlatformContext
-    
+
     /**
      * Generate login QR code
      * 
      * @return QR code generate result with URL and key
      */
     suspend fun generateLoginQRCode(): QRCodeGenerateResult
-    
+
     /**
      * Poll QR code login status
      * 
@@ -110,14 +109,14 @@ interface VideoPlatformService {
      * @return Login status and result
      */
     suspend fun pollLoginQRCodeStatus(qrCodeKey: String): QRCodePollResult
-    
+
     /**
      * Get current login status
      * 
      * @return Login status
      */
     suspend fun getLoginStatus(): Boolean
-    
+
     /**
      * Logout current user
      */
