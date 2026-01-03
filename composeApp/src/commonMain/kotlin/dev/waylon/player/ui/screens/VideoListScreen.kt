@@ -33,7 +33,7 @@ fun VideoListScreen(
     isLoading: Boolean,
     isLoadingMore: Boolean,
     errorMessage: String?,
-    onLoadMore: () -> Unit,
+    onLoadMore: (() -> Unit)?,
     onVideoClick: (String) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
@@ -81,6 +81,7 @@ fun VideoListScreen(
             val gridState = rememberLazyGridState()
 
             // 检测滚动到底部，触发加载更多
+        if (onLoadMore != null) {
             LaunchedEffect(gridState) {
                 snapshotFlow {
                     val visibleItems = gridState.layoutInfo.visibleItemsInfo
@@ -93,6 +94,7 @@ fun VideoListScreen(
                         }
                     }
             }
+        }
 
             LazyVerticalGrid(
                 state = gridState,

@@ -45,12 +45,7 @@ fun MainScreen() {
                     isRefreshing = true
                     showVideoDetail = false // 点击标签时关闭视频详情页
                 },
-                onLoginClick = { showLoginQRCode = !showLoginQRCode },
-                onRefreshClick = {
-                    // 触发当前页面刷新
-                    isRefreshing = true
-                    // 这里可以添加刷新逻辑，通过回调传递给各个屏幕
-                }
+                onLoginClick = { showLoginQRCode = !showLoginQRCode }
             )
         }
     ) { paddingValues ->

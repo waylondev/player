@@ -36,8 +36,7 @@ import dev.waylon.player.ui.theme.Corners
 fun TopAppBar(
     selectedTab: Int,
     onTabSelected: (Int) -> Unit,
-    onLoginClick: () -> Unit,
-    onRefreshClick: () -> Unit = { }
+    onLoginClick: () -> Unit
 ) {
     androidx.compose.material3.CenterAlignedTopAppBar(
         title = {
@@ -71,22 +70,6 @@ fun TopAppBar(
                 )
             }
         },
-        navigationIcon = {
-            // 左侧刷新按钮
-            IconButton(
-                onClick = onRefreshClick,
-                modifier = Modifier.background(
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    shape = Corners.full
-                )
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Refresh,
-                    contentDescription = "刷新",
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-        },
         actions = {
             // 右侧登录按钮
             IconButton(
@@ -106,7 +89,6 @@ fun TopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
             titleContentColor = MaterialTheme.colorScheme.primary,
-            navigationIconContentColor = MaterialTheme.colorScheme.primary,
             actionIconContentColor = MaterialTheme.colorScheme.primary
         ),
         modifier = Modifier.background(
