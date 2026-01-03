@@ -9,11 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
-import uk.co.caprica.vlcj.factory.MediaPlayerFactory
-import uk.co.caprica.vlcj.player.base.MediaPlayer
 import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent
-import java.awt.Component
-import javax.swing.JPanel
 
 /**
  * Video player component - JVM platform implementation

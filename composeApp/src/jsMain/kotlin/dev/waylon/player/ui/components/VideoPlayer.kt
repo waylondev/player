@@ -8,7 +8,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import kotlinx.browser.document
-import kotlinx.browser.window
 import org.w3c.dom.HTMLVideoElement
 
 /**
@@ -31,14 +30,14 @@ actual fun VideoPlayerComponent(
         val videoContainer = document.createElement("div") as org.w3c.dom.HTMLDivElement
         videoContainer.style.width = "100%"
         videoContainer.style.height = "100%"
-        
+
         val video = document.createElement("video") as HTMLVideoElement
         video.id = "compose-video-player"
         video.style.width = "100%"
         video.style.height = "100%"
         video.controls = true
         video.autoplay = false
-        
+
         videoContainer.appendChild(video)
         document.body?.appendChild(videoContainer)
 
@@ -46,11 +45,11 @@ actual fun VideoPlayerComponent(
         val playListener = { _: dynamic ->
             currentOnPlayStateChange(true)
         }
-        
+
         val pauseListener = { _: dynamic ->
             currentOnPlayStateChange(false)
         }
-        
+
         video.addEventListener("play", playListener)
         video.addEventListener("pause", pauseListener)
 
