@@ -36,7 +36,7 @@ actual fun VideoPlayerComponent(
     val currentUrl by rememberUpdatedState(url)
     val currentIsPlaying by rememberUpdatedState(isPlaying)
     val currentOnPlayStateChange by rememberUpdatedState(onPlayStateChange)
-    
+
     // 使用统一的状态管理类，保持状态管理风格一致
     val playerState = remember { VideoPlayerState(url, isPlaying) }
 
@@ -58,6 +58,7 @@ actual fun VideoPlayerComponent(
                         currentOnPlayStateChange(false)
                         playerState.setLoading(false)
                     }
+
                     Player.STATE_IDLE -> playerState.setLoading(false)
                 }
             }
@@ -65,7 +66,7 @@ actual fun VideoPlayerComponent(
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 currentOnPlayStateChange(isPlaying)
             }
-            
+
             override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
                 Logger.e("VideoPlayer", "Playback error: ${error.message}", error)
                 playerState.setError("Video playback error: ${error.message}")
@@ -96,11 +97,11 @@ actual fun VideoPlayerComponent(
             try {
                 playerState.setError(null)
                 playerState.setLoading(true)
-                
+
                 val mediaItem = MediaItem.fromUri(Uri.parse(currentUrl))
                 exoPlayer.setMediaItem(mediaItem)
                 exoPlayer.prepare()
-                
+
                 // Don't auto-play when URL changes, respect the current playback state
                 if (currentIsPlaying) {
                     exoPlayer.play()

@@ -12,14 +12,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        
+
         Logger.i("MainActivity", "Application starting...")
 
         setContent {
             App()
         }
     }
-    
+
     override fun onDestroy() {
         super.onDestroy()
         Logger.i("MainActivity", "Application shutting down...")

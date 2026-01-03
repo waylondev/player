@@ -121,15 +121,21 @@ object VideoStreamTransformer : Transformer<JsonObject, VideoStream> {
             val length = durlObject["length"]?.jsonPrimitive?.longOrNull ?: 0
             val size = durlObject["size"]?.jsonPrimitive?.longOrNull ?: 0
             
-            // For MP4/FLV format, we need to infer quality from the format field
+            // Use actual quality information from the API response
             val qualityId = data["quality"]?.jsonPrimitive?.intOrNull ?: 64
             val formatStr = data["format"]?.jsonPrimitive?.contentOrNull ?: ""
             
+            // Get actual resolution from API if available, otherwise estimate
+            val width = data["width"]?.jsonPrimitive?.intOrNull
+            val height = data["height"]?.jsonPrimitive?.intOrNull
+            val resolution = if (width != null && height != null) {
+                Resolution(width, height)
+            } else {
+                estimateResolution(qualityId)
+            }
+            
             val qualityName = getQualityDisplayName(qualityId, "", formatStr)
             val (format, codec) = parseFormatAndCodec("", formatStr, 7) // Default to AVC for MP4/FLV
-            
-            // Estimate resolution based on quality
-            val resolution = estimateResolution(qualityId)
             
             StreamItem(
                 qualityId = qualityId,
@@ -155,12 +161,13 @@ object VideoStreamTransformer : Transformer<JsonObject, VideoStream> {
             val url = baseUrl.ifEmpty { backupUrls.firstOrNull() ?: return@mapNotNull null }
             val bandwidth = audio["bandwidth"]?.jsonPrimitive?.intOrNull ?: 0
             val size = audio["size"]?.jsonPrimitive?.longOrNull
+            val audioId = audio["id"]?.jsonPrimitive?.intOrNull ?: 30280 // Default to 30280 (普通音质)
             
             AudioStreamItem(
-                qualityId = 0, // Audio streams
-                qualityName = "Audio",
+                qualityId = audioId,
+                qualityName = getAudioQualityDisplayName(audioId, bandwidth),
                 bitrate = bandwidth / 1000,
-                format = "audio",
+                format = audio["mimeType"]?.jsonPrimitive?.contentOrNull ?: "audio/mp4",
                 url = url,
                 size = size
             )
@@ -184,6 +191,23 @@ object VideoStreamTransformer : Transformer<JsonObject, VideoStream> {
             127 -> "8K"
             129 -> "HDR Vivid"
             else -> "未知 ($qualityId)"
+        }
+    }
+
+    private fun getAudioQualityDisplayName(audioId: Int, bandwidth: Int): String {
+        return when (audioId) {
+            30216 -> "64K"
+            30232 -> "132K"
+            30280 -> "192K"
+            30250 -> "杜比全景声"
+            30251 -> "Hi-Res"
+            30255 -> "高音质"
+            else -> when {
+                bandwidth >= 320000 -> "高码率音频"
+                bandwidth >= 192000 -> "标准音频"
+                bandwidth >= 128000 -> "普通音频"
+                else -> "低码率音频 ($audioId)"
+            }
         }
     }
 
