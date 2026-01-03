@@ -6,42 +6,31 @@ import io.ktor.client.statement.HttpResponse
 import kotlinx.serialization.json.JsonObject
 
 /**
- * API call extension functions
- * Provides common API execution and transformation functionality to avoid code duplication
+ * Modern API call extension functions with DSL-style syntax
+ * Provides clean, concise API execution and transformation functionality
  */
 
 /**
- * Execute API call and return raw response
- *
- * @param request Request object
- * @return Raw HTTP response
+ * DSL-style API execution with request builder
  */
-suspend inline fun <T> ApiService<T>.executeRaw(request: T): HttpResponse = execute(request)
-
+suspend inline fun <T> ApiService<T>.executeRaw(
+    request: T
+): HttpResponse = execute(request)
 
 /**
- * Execute API call and automatically transform response
- *
- * @param request Request object
- * @param transformer Response transformation function
- * @return Transformed result
+ * DSL-style API execution with transformation
  */
-
 suspend inline fun <T, R> ApiService<T>.executeAndTransform(
     request: T,
     crossinline transformer: suspend (HttpResponse) -> R
-): R {
-    val response = executeRaw(request)
-    return transformer(response)
-}
-
+): R = transformer(executeRaw(request))
 
 /**
- * Convenience extension for parsing JSON response using Ktor's built-in body<T>()
+ * Type-safe JSON parsing extension
  */
-suspend inline fun <reified R> HttpResponse.parseAs(): R = this.body()
+suspend inline fun <reified R> HttpResponse.parseAs(): R = body()
 
 /**
- * Convenience extension for converting to JSON object
+ * JSON object conversion extension
  */
-suspend inline fun HttpResponse.toJsonObject(): JsonObject = this.body()
+suspend inline fun HttpResponse.toJsonObject(): JsonObject = body()

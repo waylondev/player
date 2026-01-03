@@ -77,8 +77,8 @@ kotlin {
             implementation(projects.bilibiliApi) // Add dependency on bilibiliApi module for JVM platform
             
             // VLCJ dependencies for video playback on desktop platforms
-            implementation("uk.co.caprica:vlcj:4.8.2")
-            implementation("uk.co.caprica:vlcj-javafx:0.1.15")
+            implementation("uk.co.caprica:vlcj:5.0.0-M4")
+            // vlcj-javafx is not needed for Compose Desktop, using SwingPanel instead
         }
         jsMain.dependencies {
             implementation(projects.bilibiliApi) // Add dependency on bilibiliApi module for JS platform
@@ -108,7 +108,14 @@ android {
     }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+        getByName("debug") {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
     compileOptions {
