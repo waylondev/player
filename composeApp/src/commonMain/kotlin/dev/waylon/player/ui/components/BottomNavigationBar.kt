@@ -30,14 +30,14 @@ import androidx.compose.ui.unit.sp
 import dev.waylon.player.ui.theme.Corners
 
 /**
- * 科技感底部导航栏组件
+ * Tech-style bottom navigation bar component
  */
 @Composable
 fun BottomNavigationBar(
     selectedTab: Int,
     onTabSelected: (Int) -> Unit
 ) {
-    // 使用Box包装BottomAppBar，解决底部圆角被截断的问题
+    // Use Box to wrap BottomAppBar to solve the issue of bottom corners being clipped
     androidx.compose.foundation.layout.Box(
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
@@ -60,7 +60,7 @@ fun BottomNavigationBar(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // 首页推荐
+                // Home recommendations
                 BottomNavItem(
                     icon = Icons.Default.Home,
                     label = "推荐",
@@ -68,7 +68,7 @@ fun BottomNavigationBar(
                     onClick = { onTabSelected(0) }
                 )
 
-                // 热门视频
+                // Hot videos
                 BottomNavItem(
                     icon = Icons.Default.Fireplace,
                     label = "热门",
@@ -76,7 +76,7 @@ fun BottomNavigationBar(
                     onClick = { onTabSelected(1) }
                 )
 
-                // 排行榜
+                // Rankings
                 BottomNavItem(
                     icon = Icons.Default.Leaderboard,
                     label = "排行",
@@ -84,7 +84,7 @@ fun BottomNavigationBar(
                     onClick = { onTabSelected(2) }
                 )
 
-                // 搜索
+                // Search
                 BottomNavItem(
                     icon = Icons.Default.Search,
                     label = "搜索",
@@ -97,7 +97,7 @@ fun BottomNavigationBar(
 }
 
 /**
- * 底部导航项组件
+ * Bottom navigation item component
  */
 @Composable
 private fun BottomNavItem(

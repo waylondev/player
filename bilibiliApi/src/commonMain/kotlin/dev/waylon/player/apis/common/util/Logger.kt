@@ -1,5 +1,6 @@
 package dev.waylon.player.apis.common.util
 
+import co.touchlab.kermit.Logger
 import co.touchlab.kermit.Severity
 import co.touchlab.kermit.StaticConfig
 

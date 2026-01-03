@@ -37,7 +37,7 @@ kotlin {
         }
         androidMain.dependencies {
             implementation(libs.ktor.client.android)
-            implementation(libs.kermit.android)
+//            implementation(libs.kermit.android)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -47,11 +47,11 @@ kotlin {
         }
         jvmMain.dependencies {
             implementation(libs.ktor.client.java)
-            implementation(libs.kermit.jvm)
+//            implementation(libs.kermit.jvm)
         }
         jsMain.dependencies {
             implementation(libs.ktor.client.js)
-            implementation(libs.kermit.js)
+//            implementation(libs.kermit.js)
         }
     }
 }

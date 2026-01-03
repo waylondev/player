@@ -31,7 +31,7 @@ import io.kamel.image.asyncPainterResource
 
 
 /**
- * 科技感视频卡片组件
+ * Tech-style video card component
  */
 @Composable
 fun VideoCard(
@@ -49,7 +49,7 @@ fun VideoCard(
         Column(
             modifier = Modifier.padding(12.dp)
         ) {
-            // 视频封面
+            // Video cover
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -67,14 +67,14 @@ fun VideoCard(
                         shape = Corners.md
                     )
             ) {
-                // 使用KamelImage加载视频封面，使用示例图片URL测试
+                // Load video cover using KamelImage, using sample image URL for testing
                 KamelImage(
                     resource = asyncPainterResource(data = video.coverUrl),
                     contentDescription = video.title,
                     modifier = Modifier.fillMaxSize()
                 )
 
-                // 视频时长
+                // Video duration
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
@@ -94,7 +94,7 @@ fun VideoCard(
                     )
                 }
 
-                // 播放量
+                // Play count
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopStart)
@@ -117,7 +117,7 @@ fun VideoCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // 视频标题
+            // Video title
             Text(
                 text = video.title,
                 fontSize = 16.sp,
@@ -131,12 +131,12 @@ fun VideoCard(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // 作者和分类信息
+            // Author and category information
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // 作者信息
+                // Author information
                 Text(
                     text = video.author,
                     fontSize = 13.sp,
@@ -147,7 +147,7 @@ fun VideoCard(
                     overflow = TextOverflow.Ellipsis
                 )
 
-                // 分类信息
+                // Category information
                 if (video.category != null) {
                     Text(
                         text = video.category ?: "",
@@ -164,7 +164,7 @@ fun VideoCard(
 }
 
 /**
- * 格式化视频时长
+ * Format video duration
  */
 private fun formatDuration(seconds: Int): String {
     val hours = seconds / 3600
@@ -183,7 +183,7 @@ private fun formatDuration(seconds: Int): String {
 }
 
 /**
- * 格式化播放量
+ * Format play count
  */
 private fun formatPlayCount(playCount: Long): String {
     return when {

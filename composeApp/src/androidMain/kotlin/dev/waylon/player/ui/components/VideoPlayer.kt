@@ -75,9 +75,19 @@ actual fun VideoPlayerComponent(
 
     // Update video URL
     DisposableEffect(currentUrl) {
-        exoPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(currentUrl)))
-        exoPlayer.prepare()
-        exoPlayer.play()
+        if (currentUrl.isNotBlank()) {
+            try {
+                exoPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(currentUrl)))
+                exoPlayer.prepare()
+                // Don't auto-play when URL changes, respect the current playback state
+                if (currentIsPlaying) {
+                    exoPlayer.play()
+                }
+            } catch (e: Exception) {
+                // Handle URL parsing or media loading errors
+                e.printStackTrace()
+            }
+        }
         onDispose {}
     }
 

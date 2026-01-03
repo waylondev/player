@@ -3,13 +3,21 @@ package dev.waylon.player.ui.components
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.SwingPanel
+import uk.co.caprica.vlcj.factory.MediaPlayerFactory
+import uk.co.caprica.vlcj.player.base.MediaPlayer
+import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent
+import java.awt.Component
+import javax.swing.JPanel
 
 /**
  * Video player component - JVM platform implementation
- * Uses Compose Desktop native support implementation
+ * Uses VLCJ library for video playback on desktop platforms
  */
 @Composable
 actual fun VideoPlayerComponent(
@@ -22,14 +30,42 @@ actual fun VideoPlayerComponent(
     val currentIsPlaying by rememberUpdatedState(isPlaying)
     val currentOnPlayStateChange by rememberUpdatedState(onPlayStateChange)
 
+    // Create media player component
+    val mediaPlayerComponent = remember {
+        EmbeddedMediaPlayerComponent()
+    }
+
+    // Update playback state
+    DisposableEffect(currentIsPlaying) {
+        if (currentIsPlaying) {
+            mediaPlayerComponent.mediaPlayer().controls().play()
+        } else {
+            mediaPlayerComponent.mediaPlayer().controls().pause()
+        }
+        onDispose {}
+    }
+
+    // Update video URL
+    DisposableEffect(currentUrl) {
+        if (currentUrl.isNotBlank()) {
+            mediaPlayerComponent.mediaPlayer().media().play(currentUrl)
+        }
+        onDispose {}
+    }
+
+    // Clean up resources
+    DisposableEffect(Unit) {
+        onDispose {
+            mediaPlayerComponent.mediaPlayer().controls().stop()
+            mediaPlayerComponent.mediaPlayer().release()
+        }
+    }
+
     Box(modifier = modifier.fillMaxSize()) {
-        // Use Compose Desktop native support for video player implementation
-        // Using platform-specific implementation to ensure proper compilation
-        CommonVideoPlayerComponent(
-            modifier = modifier,
-            url = currentUrl,
-            isPlaying = currentIsPlaying,
-            onPlayStateChange = currentOnPlayStateChange
+        // Use SwingPanel to embed VLCJ media player
+        SwingPanel(
+            modifier = Modifier.fillMaxSize(),
+            factory = { mediaPlayerComponent }
         )
     }
 }
