@@ -24,7 +24,7 @@ import dev.waylon.player.ui.components.VideoCard
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 /**
- * 通用视频列表页面
+ * Generic video list screen
  */
 @Composable
 fun VideoListScreen(
@@ -37,7 +37,7 @@ fun VideoListScreen(
     onVideoClick: (String) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
-        // 错误信息
+        // Error message
         errorMessage?.let {
             Text(
                 text = it,
@@ -48,7 +48,7 @@ fun VideoListScreen(
             )
         }
 
-        // 加载状态
+        // Loading state
         if (isLoading) {
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -59,7 +59,7 @@ fun VideoListScreen(
                     color = androidx.compose.material3.MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = "加载中...",
+                    text = "Loading...",
                     modifier = Modifier.padding(top = 16.dp),
                     color = androidx.compose.material3.MaterialTheme.colorScheme.primary
                 )
@@ -71,16 +71,16 @@ fun VideoListScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "暂无视频数据",
+                    text = "No video data available",
                     style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
                     color = androidx.compose.material3.MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         } else {
-            // 视频列表 - 自适应布局，每个卡片最小宽度200dp
+            // Video list - adaptive layout with minimum 200dp card width
             val gridState = rememberLazyGridState()
 
-            // 检测滚动到底部，触发加载更多
+            // Detect scroll to bottom and trigger loading more
             if (onLoadMore != null) {
                 LaunchedEffect(gridState) {
                     snapshotFlow {
@@ -111,7 +111,7 @@ fun VideoListScreen(
                     )
                 }
 
-                // 加载更多指示器
+                // Load more indicator
                 if (isLoadingMore) {
                     item {
                         Column(
@@ -124,7 +124,7 @@ fun VideoListScreen(
                                 color = androidx.compose.material3.MaterialTheme.colorScheme.primary
                             )
                             Text(
-                                text = "加载更多...",
+                                text = "Loading more...",
                                 modifier = Modifier.padding(top = 8.dp),
                                 color = androidx.compose.material3.MaterialTheme.colorScheme.primary
                             )

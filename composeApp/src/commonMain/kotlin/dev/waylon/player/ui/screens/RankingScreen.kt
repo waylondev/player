@@ -10,7 +10,7 @@ import dev.waylon.player.model.VideoInfo
 import dev.waylon.player.service.ServiceProvider
 
 /**
- * 排行榜视频列表
+ * Ranking video list screen
  */
 @Composable
 fun RankingScreen(
@@ -18,23 +18,23 @@ fun RankingScreen(
     onRefreshComplete: () -> Unit,
     onVideoClick: (String) -> Unit
 ) {
-    // 视频列表状态
+    // Video list state
     var videos by remember { mutableStateOf<List<VideoInfo>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
-    // 加载数据（初始加载和刷新）
+    // Load data (initial load and refresh)
     LaunchedEffect(isRefreshing) {
         try {
             isLoading = true
-            // 调用统一接口获取排行榜视频
+            // Call unified API to get ranking videos
             val result = ServiceProvider.videoService.getHotRanking(
                 rid = 0,
-                day = 7 // 使用7天热门数据作为排行榜
+                day = 7 // Use 7-day hot data as ranking
             )
             videos = result
         } catch (e: Exception) {
-            errorMessage = "加载失败: ${e.message}"
+            errorMessage = "Loading failed: ${e.message}"
         } finally {
             isLoading = false
             onRefreshComplete()
@@ -42,12 +42,12 @@ fun RankingScreen(
     }
 
     VideoListScreen(
-        title = "排行榜",
+        title = "Ranking",
         videos = videos,
         isLoading = isLoading,
-        isLoadingMore = false, // 排行榜不需要加载更多
+        isLoadingMore = false, // Ranking doesn't need load more
         errorMessage = errorMessage,
-        onLoadMore = null, // 排行榜不需要加载更多
+        onLoadMore = null, // Ranking doesn't need load more
         onVideoClick = onVideoClick
     )
 }

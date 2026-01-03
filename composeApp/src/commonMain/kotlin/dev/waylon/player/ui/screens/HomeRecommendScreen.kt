@@ -12,7 +12,7 @@ import dev.waylon.player.service.ServiceProvider
 import kotlinx.coroutines.launch
 
 /**
- * 首页推荐视频列表
+ * Home recommendation video list
  */
 @Composable
 fun HomeRecommendScreen(
@@ -20,50 +20,50 @@ fun HomeRecommendScreen(
     onRefreshComplete: () -> Unit,
     onVideoClick: (String) -> Unit
 ) {
-    // 视频列表状态
+    // Video list state
     var videos by remember { mutableStateOf<List<VideoInfo>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
     var isLoadingMore by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var page by remember { mutableStateOf(1) }
 
-    // 加载更多协程作用域
+    // Load more coroutine scope
     val coroutineScope = rememberCoroutineScope()
 
-    // 加载数据（初始加载和刷新）
+    // Load data (initial load and refresh)
     LaunchedEffect(isRefreshing) {
         try {
             isLoading = true
             page = 1
-            // 调用统一接口获取首页推荐视频
+            // Call unified API to get home recommendation videos
             val result = ServiceProvider.videoService.getHomeRecommendations(
                 pageSize = 20,
                 page = page
             )
             videos = result
         } catch (e: Exception) {
-            errorMessage = "加载失败: ${e.message}"
+            errorMessage = "Load failed: ${e.message}"
         } finally {
             isLoading = false
             onRefreshComplete()
         }
     }
 
-    // 加载更多
+    // Load more
     val onLoadMore = {
         coroutineScope.launch {
             try {
                 isLoadingMore = true
                 page += 1
-                // 调用统一接口获取更多首页推荐视频
+                // Call unified API to get more home recommendation videos
                 val result = ServiceProvider.videoService.getHomeRecommendations(
                     pageSize = 20,
                     page = page
                 )
-                // 直接追加数据，不做去重处理
+                // Directly append data, no deduplication
                 videos = videos + result
             } catch (e: Exception) {
-                errorMessage = "加载更多失败: ${e.message}"
+                errorMessage = "Load more failed: ${e.message}"
             } finally {
                 isLoadingMore = false
             }
@@ -72,7 +72,7 @@ fun HomeRecommendScreen(
     }
 
     VideoListScreen(
-        title = "首页推荐",
+        title = "Home Recommendations",
         videos = videos,
         isLoading = isLoading,
         isLoadingMore = isLoadingMore,

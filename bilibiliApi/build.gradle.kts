@@ -28,6 +28,7 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.datetime)
+            implementation(libs.kermit)
             implementation(projects.shared) // Add dependency on shared module to access VideoPlatformService
         }
         commonTest.dependencies {

@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 /**
- * 视频播放器组件 - 跨平台实现
+ * Video player component - Cross-platform implementation
  */
 @Composable
 expect fun VideoPlayerComponent(
@@ -25,7 +25,7 @@ expect fun VideoPlayerComponent(
 )
 
 /**
- * 视频播放器组件 - 通用实现（用于不支持视频播放的平台或作为降级方案）
+ * Video player component - Common implementation (for platforms that don't support video playback or as fallback)
  */
 @Composable
 fun CommonVideoPlayerComponent(
@@ -42,41 +42,41 @@ fun CommonVideoPlayerComponent(
                     onPlayStateChange(!isPlaying)
                 }
         ) {
-            // 视频播放器标题
+            // Video player title
             Text(
-                text = "视频播放器",
+                text = "Video Player",
                 modifier = Modifier.align(Alignment.TopCenter)
                     .padding(16.dp),
                 style = MaterialTheme.typography.headlineSmall
             )
 
-            // 视频播放地址（仅显示部分）
+            // Video playback URL (partial display)
             Text(
-                text = "播放地址: ${if (url.length > 50) "${url.substring(0, 50)}..." else url}",
+                text = "Playback URL: ${if (url.length > 50) "${url.substring(0, 50)}..." else url}",
                 modifier = Modifier.align(Alignment.Center)
                     .padding(16.dp),
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 2
             )
 
-            // 播放状态
+            // Playback state
             Text(
-                text = if (isPlaying) "播放中" else "已暂停",
+                text = if (isPlaying) "Playing" else "Paused",
                 modifier = Modifier.align(Alignment.BottomCenter)
                     .padding(16.dp),
                 style = MaterialTheme.typography.bodyMedium
             )
 
-            // 平台支持信息
+            // Platform support information
             Text(
-                text = "当前平台的视频播放功能正在开发中...",
+                text = "Video playback functionality for current platform is under development...",
                 modifier = Modifier.align(Alignment.BottomStart)
                     .padding(16.dp),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            // 播放状态指示器
+            // Playback state indicator
             if (isPlaying) {
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center)

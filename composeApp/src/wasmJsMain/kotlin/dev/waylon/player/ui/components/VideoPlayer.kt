@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 /**
- * 视频播放器组件 - wasmJs平台实现
+ * Video player component - wasmJs platform implementation
  */
 @Composable
 actual fun VideoPlayerComponent(
@@ -13,8 +13,8 @@ actual fun VideoPlayerComponent(
     isPlaying: Boolean,
     onPlayStateChange: (Boolean) -> Unit
 ) {
-    // wasmJs平台使用CommonVideoPlayerComponent作为实现
-    // 在实际项目中，可以使用HTML5 Video元素或其他WebAssembly视频播放库
+    // wasmJs platform uses CommonVideoPlayerComponent as implementation
+    // In real projects, HTML5 Video element or other WebAssembly video playback libraries can be used
     CommonVideoPlayerComponent(
         modifier = modifier,
         url = url,

@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 /**
- * 视频播放器组件 - JS平台实现
- * 使用CommonVideoPlayerComponent作为实现，确保可以正确编译
+ * Video player component - JS platform implementation
+ * Uses CommonVideoPlayerComponent as implementation to ensure proper compilation
  */
 @Composable
 actual fun VideoPlayerComponent(
@@ -14,7 +14,7 @@ actual fun VideoPlayerComponent(
     isPlaying: Boolean,
     onPlayStateChange: (Boolean) -> Unit
 ) {
-    // JS平台使用CommonVideoPlayerComponent作为实现
+    // JS platform uses CommonVideoPlayerComponent as implementation
     CommonVideoPlayerComponent(
         modifier = modifier,
         url = url,

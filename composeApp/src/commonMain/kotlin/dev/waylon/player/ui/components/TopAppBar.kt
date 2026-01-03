@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.sp
 import dev.waylon.player.ui.theme.Corners
 
 /**
- * 科技感顶部导航栏组件 (TV UI 设计)
+ * Tech-style top navigation bar component (TV UI design)
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,7 +39,7 @@ fun TopAppBar(
 ) {
     androidx.compose.material3.CenterAlignedTopAppBar(
         title = {
-            // 中央导航菜单
+            // Central navigation menu
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -47,21 +47,21 @@ fun TopAppBar(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // 首页推荐
+                // Home recommendations
                 NavMenuItem(
                     label = "推荐",
                     isSelected = selectedTab == 0,
                     onClick = { onTabSelected(0) }
                 )
 
-                // 排行榜
+                // Ranking
                 NavMenuItem(
                     label = "排行",
                     isSelected = selectedTab == 1,
                     onClick = { onTabSelected(1) }
                 )
 
-                // 搜索
+                // Search
                 NavMenuItem(
                     label = "搜索",
                     isSelected = selectedTab == 2,
@@ -70,7 +70,7 @@ fun TopAppBar(
             }
         },
         actions = {
-            // 右侧登录按钮
+            // Right side login button
             IconButton(
                 onClick = onLoginClick,
                 modifier = Modifier.background(
@@ -80,7 +80,7 @@ fun TopAppBar(
             ) {
                 Icon(
                     imageVector = Icons.Default.AccountCircle,
-                    contentDescription = "登录",
+                    contentDescription = "Login",
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -98,7 +98,7 @@ fun TopAppBar(
 }
 
 /**
- * 导航菜单项组件
+ * Navigation menu item component
  */
 @Composable
 private fun NavMenuItem(

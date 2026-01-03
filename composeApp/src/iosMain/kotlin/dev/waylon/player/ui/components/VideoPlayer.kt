@@ -18,7 +18,7 @@ import platform.Foundation.NSURL
 import platform.UIKit.UIView
 
 /**
- * 视频播放器组件 - iOS平台实现
+ * Video player component - iOS platform implementation
  */
 @OptIn(ExperimentalForeignApi::class)
 @Composable
@@ -32,29 +32,29 @@ actual fun VideoPlayerComponent(
     val currentIsPlaying by rememberUpdatedState(isPlaying)
     val currentOnPlayStateChange by rememberUpdatedState(onPlayStateChange)
 
-    // 创建一个记住的播放器引用
+    // Create a remembered player reference
     val playerRef = remember { mutableListOf<AVPlayer?>(null) }
 
-    // 用于处理AVPlayerLayer的UIView工厂
+    // UIView factory for handling AVPlayerLayer
     val playerViewFactory = remember {
         {
             val view = UIView()
             val player = AVPlayer()
             playerRef[0] = player
 
-            // 创建AVPlayerLayer并添加到视图层
+            // Create AVPlayerLayer and add to view layer
             val playerLayer = AVPlayerLayer(player = player)
             playerLayer.frame = view.bounds
             playerLayer.videoGravity = AVPlayerLayerGravityResizeAspect
             view.layer.addSublayer(playerLayer)
 
-            // 存储layer引用以便后续更新
+            // Store layer reference for future updates
             view.layer.setValue(playerLayer, forKey = "playerLayer")
             view
         }
     }
 
-    // 处理视图更新
+    // Handle view updates
     val onViewUpdate = remember {
         { view: UIView ->
             val playerLayer = view.layer.valueForKey("playerLayer") as? AVPlayerLayer
@@ -63,7 +63,7 @@ actual fun VideoPlayerComponent(
     }
 
     Box(modifier = modifier.fillMaxSize()) {
-        // UIKitView用于嵌入iOS原生视图
+        // UIKitView for embedding iOS native views
         UIKitView(
             factory = playerViewFactory,
             modifier = Modifier.fillMaxSize(),
@@ -71,7 +71,7 @@ actual fun VideoPlayerComponent(
         )
     }
 
-    // 更新视频地址
+    // Update video URL
     DisposableEffect(currentUrl) {
         val player = playerRef[0]
         val nsUrl = NSURL(string = currentUrl)
@@ -84,7 +84,7 @@ actual fun VideoPlayerComponent(
         onDispose {}
     }
 
-    // 更新播放状态
+    // Update playback state
     DisposableEffect(currentIsPlaying) {
         val player = playerRef[0]
         if (currentIsPlaying) {
@@ -95,7 +95,7 @@ actual fun VideoPlayerComponent(
         onDispose {}
     }
 
-    // 清理资源
+    // Clean up resources
     DisposableEffect(Unit) {
         onDispose {
             val player = playerRef[0]
@@ -105,5 +105,5 @@ actual fun VideoPlayerComponent(
     }
 }
 
-// iOS常量定义
+// iOS constant definitions
 private const val AVPlayerLayerGravityResizeAspect = "AVLayerVideoGravityResizeAspect"

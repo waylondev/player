@@ -17,7 +17,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 
 /**
- * 视频播放器组件 - Android平台实现
+ * Video player component - Android platform implementation
  */
 @Composable
 actual fun VideoPlayerComponent(
@@ -31,23 +31,23 @@ actual fun VideoPlayerComponent(
     val currentIsPlaying by rememberUpdatedState(isPlaying)
     val currentOnPlayStateChange by rememberUpdatedState(onPlayStateChange)
 
-    // 创建ExoPlayer实例
+    // Create ExoPlayer instance
     val exoPlayer = remember(context) {
         ExoPlayer.Builder(context)
             .build()
             .apply {
-                // 设置媒体项
+                // Set media item
                 setMediaItem(MediaItem.fromUri(Uri.parse(currentUrl)))
-                // 准备播放
+                // Prepare for playback
                 prepare()
             }
     }
 
-    // 监听播放状态变化
+    // Listen for playback state changes
     DisposableEffect(exoPlayer) {
         val listener = object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
-                // 播放状态变化时的处理
+                // Handle playback state changes
             }
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
@@ -56,14 +56,14 @@ actual fun VideoPlayerComponent(
         }
         exoPlayer.addListener(listener)
 
-        // 清理资源
+        // Clean up resources
         onDispose {
             exoPlayer.removeListener(listener)
             exoPlayer.release()
         }
     }
 
-    // 更新播放状态
+    // Update playback state
     DisposableEffect(currentIsPlaying) {
         if (currentIsPlaying) {
             exoPlayer.play()
@@ -73,7 +73,7 @@ actual fun VideoPlayerComponent(
         onDispose {}
     }
 
-    // 更新视频地址
+    // Update video URL
     DisposableEffect(currentUrl) {
         exoPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(currentUrl)))
         exoPlayer.prepare()
@@ -82,13 +82,13 @@ actual fun VideoPlayerComponent(
     }
 
     Box(modifier = modifier.fillMaxSize()) {
-        // AndroidView用于嵌入Android原生视图
+        // AndroidView for embedding Android native views
         AndroidView(
             modifier = Modifier.fillMaxSize(),
             factory = { context ->
                 PlayerView(context).apply {
                     player = exoPlayer
-                    useController = true // 显示播放控制栏
+                    useController = true // Show playback controls
                 }
             }
         )

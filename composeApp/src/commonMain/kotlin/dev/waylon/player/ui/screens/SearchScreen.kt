@@ -41,7 +41,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 /**
- * 搜索视频页面
+ * Search videos screen
  */
 @Composable
 fun SearchScreen(
@@ -49,7 +49,7 @@ fun SearchScreen(
     onRefreshComplete: () -> Unit,
     onVideoClick: (String) -> Unit
 ) {
-    // 搜索状态
+    // Search state
     var searchKeyword by remember { mutableStateOf("") }
     var searchResults by remember { mutableStateOf<List<VideoInfo>>(emptyList()) }
     var isSearching by remember { mutableStateOf(false) }
@@ -58,12 +58,12 @@ fun SearchScreen(
     var page by remember { mutableStateOf(1) }
     var hasMore by remember { mutableStateOf(true) }
 
-    // 网格状态，用于加载更多
+    // Grid state for loading more
     val gridState = rememberLazyGridState()
 
-    // 执行搜索（初始搜索和刷新）
+    // Execute search (initial search and refresh)
     LaunchedEffect(searchKeyword, isRefreshing) {
-        // 如果没有搜索关键词，只在刷新时不做处理
+        // If no search keyword, only handle refresh
         if (searchKeyword.isBlank() && !isRefreshing) {
             searchResults = emptyList()
             errorMessage = null
@@ -71,29 +71,29 @@ fun SearchScreen(
             return@LaunchedEffect
         }
 
-        // 如果是刷新状态但没有搜索关键词，直接完成刷新
+        // If refresh state but no search keyword, complete refresh directly
         if (isRefreshing && searchKeyword.isBlank()) {
             onRefreshComplete()
             return@LaunchedEffect
         }
 
-        // 如果有搜索关键词，执行搜索
+        // If search keyword exists, execute search
         if (searchKeyword.isNotBlank()) {
             try {
                 isSearching = true
                 errorMessage = null
-                page = 1 // 重置页码
-                hasMore = true // 重置是否有更多数据
-                // 调用统一接口搜索视频
+                page = 1 // Reset page number
+                hasMore = true // Reset whether there is more data
+                // Call unified API to search videos
                 val result = ServiceProvider.videoService.searchVideos(
                     keyword = searchKeyword,
                     pageSize = 20,
                     page = page
                 )
                 searchResults = result
-                hasMore = result.size >= 20 // 如果返回的数据小于pageSize，说明没有更多数据了
+                hasMore = result.size >= 20 // If returned data is less than pageSize, no more data
             } catch (e: Exception) {
-                errorMessage = "搜索失败: ${e.message}"
+                errorMessage = "Search failed: ${e.message}"
                 searchResults = emptyList()
             } finally {
                 isSearching = false
@@ -102,7 +102,7 @@ fun SearchScreen(
         }
     }
 
-    // 加载更多视频
+    // Load more videos
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(gridState) {
@@ -113,7 +113,7 @@ fun SearchScreen(
             .distinctUntilChanged()
             .collect { lastVisibleIndex: Int ->
                 if (hasMore && !isLoadingMore && !isSearching && lastVisibleIndex >= gridState.layoutInfo.totalItemsCount - 5) {
-                    // 加载更多
+                    // Load more
                     coroutineScope.launch {
                         try {
                             isLoadingMore = true
@@ -126,7 +126,7 @@ fun SearchScreen(
                             searchResults = searchResults + result
                             hasMore = result.size >= 20
                         } catch (e: Exception) {
-                            errorMessage = "加载更多失败: ${e.message}"
+                            errorMessage = "Load more failed: ${e.message}"
                         } finally {
                             isLoadingMore = false
                         }
@@ -136,16 +136,16 @@ fun SearchScreen(
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        // 搜索栏
+        // Search bar
         OutlinedTextField(
             value = searchKeyword,
             onValueChange = { searchKeyword = it },
-            label = { Text(text = "搜索视频") },
-            placeholder = { Text(text = "输入视频标题、UP主名称等") },
+            label = { Text(text = "Search videos") },
+            placeholder = { Text(text = "Enter video title, UP name, etc.") },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Search,
-                    contentDescription = "搜索"
+                    contentDescription = "Search"
                 )
             },
             trailingIcon = {
@@ -153,7 +153,7 @@ fun SearchScreen(
                     IconButton(onClick = { searchKeyword = "" }) {
                         Icon(
                             imageVector = Icons.Default.Clear,
-                            contentDescription = "清除"
+                            contentDescription = "Clear"
                         )
                     }
                 }
@@ -169,9 +169,9 @@ fun SearchScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // 搜索结果或状态显示
+        // Search results or status display
         if (isSearching) {
-            // 搜索中状态
+            // Searching state
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -181,13 +181,13 @@ fun SearchScreen(
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = "搜索中...",
+                    text = "Searching...",
                     modifier = Modifier.padding(top = 16.dp),
                     color = MaterialTheme.colorScheme.primary
                 )
             }
         } else if (searchKeyword.isBlank()) {
-            // 搜索提示
+            // Search prompt
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -195,17 +195,17 @@ fun SearchScreen(
                 Spacer(modifier = Modifier.height(64.dp))
                 Icon(
                     imageVector = Icons.Default.Search,
-                    contentDescription = "搜索",
+                    contentDescription = "Search",
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = "请输入搜索关键词",
+                    text = "Please enter search keyword",
                     modifier = Modifier.padding(top = 16.dp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         } else if (errorMessage != null) {
-            // 错误信息
+            // Error message
             Text(
                 text = errorMessage!!,
                 color = MaterialTheme.colorScheme.error,
@@ -214,19 +214,19 @@ fun SearchScreen(
                     .fillMaxWidth()
             )
         } else if (searchResults.isEmpty()) {
-            // 无结果提示
+            // No results prompt
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(64.dp))
                 Text(
-                    text = "未找到相关视频",
+                    text = "No related videos found",
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         } else {
-            // 搜索结果列表 - 自适应布局，每个卡片最小宽度200dp
+            // Search results list - adaptive layout, minimum card width 200dp
             LazyVerticalGrid(
                 state = gridState,
                 columns = GridCells.Adaptive(minSize = 200.dp),
@@ -242,7 +242,7 @@ fun SearchScreen(
                     )
                 }
 
-                // 加载更多指示器
+                // Load more indicator
                 if (isLoadingMore) {
                     item {
                         Column(
@@ -255,7 +255,7 @@ fun SearchScreen(
                                 color = MaterialTheme.colorScheme.primary
                             )
                             Text(
-                                text = "加载更多...",
+                                text = "Loading more...",
                                 modifier = Modifier.padding(top = 8.dp),
                                 color = MaterialTheme.colorScheme.primary
                             )

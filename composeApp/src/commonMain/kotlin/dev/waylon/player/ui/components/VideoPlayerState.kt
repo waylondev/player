@@ -4,40 +4,40 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 
 /**
- * 视频播放器状态管理类
+ * Video player state management class
  */
 class VideoPlayerState(
     initialUrl: String = "",
     initialIsPlaying: Boolean = false
 ) {
-    // 视频播放地址
+    // Video playback URL
     private val _url = mutableStateOf(initialUrl)
     val url: State<String> = _url
 
-    // 播放状态
+    // Playback state
     private val _isPlaying = mutableStateOf(initialIsPlaying)
     val isPlaying: State<Boolean> = _isPlaying
 
-    // 加载状态
+    // Loading state
     private val _isLoading = mutableStateOf(false)
     val isLoading: State<Boolean> = _isLoading
 
-    // 错误信息
+    // Error message
     private val _error = mutableStateOf<String?>(null)
     val error: State<String?> = _error
 
-    // 视频时长（毫秒）
+    // Video duration (milliseconds)
     private val _duration = mutableStateOf(0L)
     val duration: State<Long> = _duration
 
-    // 当前播放位置（毫秒）
+    // Current playback position (milliseconds)
     private val _currentPosition = mutableStateOf(0L)
     val currentPosition: State<Long> = _currentPosition
 
-    // 更新视频地址
+    // Update video URL
     fun setUrl(newUrl: String) {
         _url.value = newUrl
-        // 重置其他状态
+        // Reset other states
         _isPlaying.value = false
         _isLoading.value = true
         _error.value = null
@@ -45,22 +45,22 @@ class VideoPlayerState(
         _currentPosition.value = 0L
     }
 
-    // 切换播放状态
+    // Toggle playback state
     fun togglePlay() {
         _isPlaying.value = !_isPlaying.value
     }
 
-    // 设置播放状态
+    // Set playback state
     fun setPlaying(newIsPlaying: Boolean) {
         _isPlaying.value = newIsPlaying
     }
 
-    // 设置加载状态
+    // Set loading state
     fun setLoading(newIsLoading: Boolean) {
         _isLoading.value = newIsLoading
     }
 
-    // 设置错误信息
+    // Set error message
     fun setError(newError: String?) {
         _error.value = newError
         if (newError != null) {
@@ -69,17 +69,17 @@ class VideoPlayerState(
         }
     }
 
-    // 设置视频时长
+    // Set video duration
     fun setDuration(newDuration: Long) {
         _duration.value = newDuration
     }
 
-    // 设置当前播放位置
+    // Set current playback position
     fun setCurrentPosition(newPosition: Long) {
         _currentPosition.value = newPosition
     }
 
-    // 重置状态
+    // Reset state
     fun reset() {
         _isPlaying.value = false
         _isLoading.value = false

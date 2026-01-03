@@ -8,8 +8,8 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 
 /**
- * 视频播放器组件 - JVM平台实现
- * 使用Compose Desktop原生支持的方式实现
+ * Video player component - JVM platform implementation
+ * Uses Compose Desktop native support implementation
  */
 @Composable
 actual fun VideoPlayerComponent(
@@ -23,8 +23,8 @@ actual fun VideoPlayerComponent(
     val currentOnPlayStateChange by rememberUpdatedState(onPlayStateChange)
 
     Box(modifier = modifier.fillMaxSize()) {
-        // 使用Compose Desktop原生支持的方式实现视频播放器
-        // 这里使用平台特定的实现方式，确保可以正确编译
+        // Use Compose Desktop native support for video player implementation
+        // Using platform-specific implementation to ensure proper compilation
         CommonVideoPlayerComponent(
             modifier = modifier,
             url = currentUrl,

@@ -31,8 +31,8 @@ import dev.waylon.player.service.VideoPlatformService
 import dev.waylon.player.ui.components.VideoPlayerComponent
 
 /**
- * 视频详情页面
- * 显示视频详情信息和播放视频
+ * Video detail screen
+ * Displays video detail information and plays video
  */
 @Composable
 fun VideoDetailScreen(
@@ -44,7 +44,7 @@ fun VideoDetailScreen(
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
 
-    // 加载视频详情
+    // Load video details
     LaunchedEffect(videoId) {
         isLoading = true
         error = null
@@ -58,19 +58,19 @@ fun VideoDetailScreen(
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        // 返回按钮
+        // Back button
         IconButton(
             onClick = onBackClick,
             modifier = Modifier.padding(8.dp)
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription = "返回"
+                contentDescription = "Back"
             )
         }
 
         if (isLoading) {
-            // 居中显示加载指示器
+            // Center the loading indicator
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -82,17 +82,17 @@ fun VideoDetailScreen(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "加载失败: $error")
+                Text(text = "Loading failed: $error")
             }
         } else if (videoDetail != null) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 item {
-                    // 视频播放区域
+                    // Video playback area
                     var isPlaying by remember { mutableStateOf(false) }
 
                     VideoPlayerComponent(
                         modifier = Modifier.height(300.dp).fillMaxWidth(),
-                        // 使用示例视频地址进行测试
+                        // Use sample video URL for testing
                         url = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
                         isPlaying = isPlaying,
                         onPlayStateChange = { newState ->
@@ -102,7 +102,7 @@ fun VideoDetailScreen(
                 }
 
                 item {
-                    // 视频详情信息
+                    // Video detail information
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
                             text = videoDetail!!.videoInfo.title,
@@ -113,14 +113,14 @@ fun VideoDetailScreen(
 
                         Row(modifier = Modifier.padding(bottom = 16.dp)) {
                             Text(
-                                text = "作者: ${videoDetail!!.videoInfo.author}",
+                                text = "Author: ${videoDetail!!.videoInfo.author}",
                                 modifier = Modifier.padding(end = 16.dp)
                             )
-                            Text(text = "播放量: ${videoDetail!!.videoInfo.playCount}")
+                            Text(text = "Play count: ${videoDetail!!.videoInfo.playCount}")
                         }
 
                         Text(
-                            text = "视频描述:",
+                            text = "Video description:",
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
