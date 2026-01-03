@@ -94,7 +94,7 @@ object VideoStreamTransformer : Transformer<JsonObject, VideoStream> {
         val frameRate = video["frameRate"]?.jsonPrimitive?.contentOrNull ?: ""
         
         val bandwidth = video["bandwidth"]?.jsonPrimitive?.intOrNull ?: 0
-        val codecid = video["codecid"]?.jsonPrimitive?.intOrNull ?: 7 // Default to AVC
+        val codecid = video["codecid"]?.jsonPrimitive?.intOrNull ?: 7 // Default to AVC (H.264)
         
         val qualityName = getQualityDisplayName(qualityId, codecs, mimeType)
         val (format, codec) = parseFormatAndCodec(codecs, mimeType, codecid)
