@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 
 /**
  * 视频播放器组件 - JS平台实现
+ * 使用CommonVideoPlayerComponent作为实现，确保可以正确编译
  */
 @Composable
 actual fun VideoPlayerComponent(
@@ -14,7 +15,6 @@ actual fun VideoPlayerComponent(
     onPlayStateChange: (Boolean) -> Unit
 ) {
     // JS平台使用CommonVideoPlayerComponent作为实现
-    // 在实际项目中，可以集成HTML5 video或其他JS视频播放库
     CommonVideoPlayerComponent(
         modifier = modifier,
         url = url,

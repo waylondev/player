@@ -42,6 +42,7 @@ fun CommonVideoPlayerComponent(
                     onPlayStateChange(!isPlaying)
                 }
         ) {
+            // 视频播放器标题
             Text(
                 text = "视频播放器",
                 modifier = Modifier.align(Alignment.TopCenter)
@@ -49,12 +50,16 @@ fun CommonVideoPlayerComponent(
                 style = MaterialTheme.typography.headlineSmall
             )
 
+            // 视频播放地址（仅显示部分）
             Text(
-                text = "播放地址: $url",
-                modifier = Modifier.align(Alignment.Center),
-                style = MaterialTheme.typography.bodyMedium
+                text = "播放地址: ${if (url.length > 50) "${url.substring(0, 50)}..." else url}",
+                modifier = Modifier.align(Alignment.Center)
+                    .padding(16.dp),
+                style = MaterialTheme.typography.bodyMedium,
+                maxLines = 2
             )
 
+            // 播放状态
             Text(
                 text = if (isPlaying) "播放中" else "已暂停",
                 modifier = Modifier.align(Alignment.BottomCenter)
@@ -62,11 +67,21 @@ fun CommonVideoPlayerComponent(
                 style = MaterialTheme.typography.bodyMedium
             )
 
+            // 平台支持信息
+            Text(
+                text = "当前平台的视频播放功能正在开发中...",
+                modifier = Modifier.align(Alignment.BottomStart)
+                    .padding(16.dp),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
             // 播放状态指示器
             if (isPlaying) {
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center)
-                        .padding(16.dp)
+                        .padding(16.dp),
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
         }
