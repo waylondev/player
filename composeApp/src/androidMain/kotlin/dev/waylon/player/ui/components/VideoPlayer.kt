@@ -20,6 +20,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import dev.waylon.player.apis.common.util.Logger
 
 /**
  * Video player component - Android platform implementation
@@ -41,6 +42,7 @@ actual fun VideoPlayerComponent(
 
     // Create ExoPlayer instance
     val exoPlayer = remember(context) {
+        Logger.i("VideoPlayer", "Creating ExoPlayer instance for URL: $url")
         ExoPlayer.Builder(context)
             .build()
     }
@@ -65,6 +67,7 @@ actual fun VideoPlayerComponent(
             }
             
             override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
+                Logger.e("VideoPlayer", "Playback error: ${error.message}", error)
                 playerState.setError("Video playback error: ${error.message}")
             }
         }
