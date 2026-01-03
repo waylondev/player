@@ -39,52 +39,52 @@ import dev.waylon.player.ui.theme.Corners
 import dev.waylon.player.ui.theme.Elevation
 
 /**
- * 登录二维码弹窗
+ * Login QR Code Dialog
  */
 @Composable
 fun LoginQRCodeDialog(
     onDismiss: () -> Unit,
     onLoginSuccess: () -> Unit
 ) {
-    // 登录状态
+    // Login state
     var isGeneratingQRCode by remember { mutableStateOf(true) }
     var qrCodeInfo by remember { mutableStateOf<dev.waylon.player.model.QRCodeInfo?>(null) }
-    var loginStatus by remember { mutableStateOf<String>("等待生成二维码...") }
+    var loginStatus by remember { mutableStateOf<String>("Waiting for QR code generation...") }
     var isLoginSuccess by remember { mutableStateOf(false) }
 
-    // 生成二维码
+    // Generate QR code
     LaunchedEffect(Unit) {
         try {
             isGeneratingQRCode = true
-            // 调用统一接口生成登录二维码
+            // Call unified interface to generate login QR code
             val result = ServiceProvider.videoService.generateLoginQRCode()
 
             if (result.success && result.qrCodeInfo != null) {
                 qrCodeInfo = result.qrCodeInfo
                 isGeneratingQRCode = false
-                loginStatus = "请使用B站APP扫描二维码登录"
+                loginStatus = "Please scan the QR code with Bilibili APP to login"
 
-                // 开始轮询登录状态
+                // Start polling login status
                 pollLoginStatus(result.qrCodeInfo!!.qrCodeKey) { status, success ->
                     loginStatus = status
                     isLoginSuccess = success
                     if (success) {
-                        // 登录成功，回调并关闭弹窗
+                        // Login successful, callback and close dialog
                         onLoginSuccess()
                     }
                 }
             } else {
                 isGeneratingQRCode = false
-                loginStatus = "二维码生成失败: ${result.errorMessage}"
+                loginStatus = "QR code generation failed: ${result.errorMessage}"
             }
         } catch (e: Exception) {
             isGeneratingQRCode = false
-            loginStatus = "二维码生成失败: ${e.message}"
+            loginStatus = "QR code generation failed: ${e.message}"
             e.printStackTrace()
         }
     }
 
-    // 背景遮罩
+    // Background overlay
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -92,7 +92,7 @@ fun LoginQRCodeDialog(
             .padding(32.dp),
         contentAlignment = Alignment.Center
     ) {
-        // 弹窗内容（带科技感边框和阴影）
+        // Dialog content (with tech-style border and shadow)
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -108,14 +108,14 @@ fun LoginQRCodeDialog(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "扫码登录B站",
+                    text = "Scan QR Code to Login Bilibili",
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(bottom = 20.dp)
                 )
 
-                // 二维码显示区域（带渐变边框）
+                // QR code display area (with gradient border)
                 Card(
                     modifier = Modifier
                         .size(220.dp)
@@ -150,14 +150,14 @@ fun LoginQRCodeDialog(
                                     modifier = Modifier.size(60.dp)
                                 )
                                 Text(
-                                    text = "生成中...",
+                                    text = "Generating...",
                                     modifier = Modifier.padding(top = 12.dp),
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     fontSize = 16.sp
                                 )
                             }
                         } else if (qrCodeInfo != null) {
-                            // 这里应该显示实际的二维码图片，暂时用占位符代替
+                            // Should display actual QR code image here, using placeholder for now
                             Box(
                                 modifier = Modifier
                                     .size(180.dp)
@@ -174,7 +174,7 @@ fun LoginQRCodeDialog(
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.AccountCircle,
-                                    contentDescription = "登录二维码",
+                                    contentDescription = "Login QR Code",
                                     modifier = Modifier
                                         .size(120.dp)
                                         .align(Alignment.Center),
@@ -183,7 +183,7 @@ fun LoginQRCodeDialog(
                             }
                         } else {
                             Text(
-                                text = "二维码生成失败",
+                                text = "QR Code Generation Failed",
                                 color = MaterialTheme.colorScheme.error,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Medium
@@ -194,13 +194,13 @@ fun LoginQRCodeDialog(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // 登录状态提示
+                // Login status prompt
                 Text(
                     text = loginStatus,
                     style = MaterialTheme.typography.bodyMedium,
                     color = when {
                         isLoginSuccess -> MaterialTheme.colorScheme.secondary
-                        loginStatus.contains("失败") -> MaterialTheme.colorScheme.error
+                        loginStatus.contains("failed") -> MaterialTheme.colorScheme.error
                         else -> MaterialTheme.colorScheme.onSurface
                     },
                     modifier = Modifier.fillMaxWidth(),
@@ -211,7 +211,7 @@ fun LoginQRCodeDialog(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // 按钮区域
+                // Button area
                 Box(
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -226,7 +226,7 @@ fun LoginQRCodeDialog(
                         )
                     ) {
                         Text(
-                            text = "取消",
+                            text = "Cancel",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium
                         )
@@ -238,53 +238,53 @@ fun LoginQRCodeDialog(
 }
 
 /**
- * 轮询登录状态
+ * Poll login status
  */
 suspend fun pollLoginStatus(
     qrCodeKey: String,
     onStatusChange: (String, Boolean) -> Unit
 ) {
-    val maxAttempts = 60 // 最多轮询60次，每次间隔2秒，总共2分钟
+    val maxAttempts = 60 // Maximum 60 attempts, 2 seconds interval each, total 2 minutes
     var attempt = 0
 
     while (attempt < maxAttempts) {
         try {
-            // 调用统一接口轮询登录状态
+            // Call unified interface to poll login status
             val result = ServiceProvider.videoService.pollLoginQRCodeStatus(qrCodeKey)
 
             when (result.status) {
                 QRCodeLoginStatus.SUCCESS -> {
-                    onStatusChange("登录成功！", true)
+                    onStatusChange("Login successful!", true)
                     return
                 }
 
                 QRCodeLoginStatus.SCANNED -> {
-                    onStatusChange("已扫描，等待确认...", false)
+                    onStatusChange("Scanned, waiting for confirmation...", false)
                 }
 
                 QRCodeLoginStatus.READY -> {
-                    onStatusChange("请使用B站APP扫描二维码", false)
+                    onStatusChange("Please scan QR code with Bilibili APP", false)
                 }
 
                 QRCodeLoginStatus.EXPIRED -> {
-                    onStatusChange("二维码已过期", false)
+                    onStatusChange("QR code expired", false)
                     return
                 }
 
                 QRCodeLoginStatus.FAILED -> {
-                    onStatusChange("登录失败", false)
+                    onStatusChange("Login failed", false)
                     return
                 }
             }
         } catch (e: Exception) {
-            onStatusChange("轮询失败: ${e.message}", false)
+            onStatusChange("Polling failed: ${e.message}", false)
         }
 
-        // 间隔2秒再次轮询
+        // Wait 2 seconds before next poll
         kotlinx.coroutines.delay(2000)
         attempt++
     }
 
-    // 超时
-    onStatusChange("登录超时", false)
+    // Timeout
+    onStatusChange("Login timeout", false)
 }

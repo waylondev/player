@@ -53,7 +53,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(projects.shared)
             
-            // 添加Kamel Image依赖用于跨平台图片加载
+            // Add Kamel Image dependency for cross-platform image loading
             implementation(libs.kamel.image.default)
             implementation(libs.ktor.client.core)
             

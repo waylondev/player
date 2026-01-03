@@ -234,8 +234,8 @@ class BilibiliAdapter : VideoPlatformService {
      * @return Login status
      */
     override suspend fun getLoginStatus(): Boolean {
-        // 实现获取登录状态的逻辑
-        // 这里简单实现，后续可以根据实际情况完善
+        // Implement login status retrieval logic
+        // Simple implementation for now, can be improved based on actual requirements
         return false
     }
 
@@ -243,8 +243,8 @@ class BilibiliAdapter : VideoPlatformService {
      * Logout current user
      */
     override suspend fun logout(): Boolean {
-        // 实现登出逻辑
-        // 这里简单实现，后续可以根据实际情况完善
+        // Implement logout logic
+        // Simple implementation for now, can be improved based on actual requirements
         return true
     }
 }

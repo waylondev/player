@@ -7,119 +7,119 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 /**
- * 科技感主题配置
+ * Tech-styled theme configuration
  */
 
-// 深色主题配色方案（默认）
+// Dark theme color scheme (default)
 val DarkColorScheme = darkColorScheme(
-    // 主要颜色
-    primary = Color(0xFF00C8FF),       // 亮蓝色，科技感主色调
-    primaryContainer = Color(0xFF001E2D), // 深青色背景
-    onPrimary = Color(0xFF000000),        // 黑色文字在主色调上
+    // Primary colors
+    primary = Color(0xFF00C8FF),       // Bright blue, tech-styled main color
+    primaryContainer = Color(0xFF001E2D), // Dark cyan background
+    onPrimary = Color(0xFF000000),        // Black text on primary color
 
-    // 次要颜色
-    secondary = Color(0xFF00FFA3),       // 亮绿色，科技感辅助色
-    secondaryContainer = Color(0xFF00291C), // 深绿色背景
-    onSecondary = Color(0xFF000000),      // 黑色文字在辅助色上
+    // Secondary colors
+    secondary = Color(0xFF00FFA3),       // Bright green, tech-styled accent color
+    secondaryContainer = Color(0xFF00291C), // Dark green background
+    onSecondary = Color(0xFF000000),      // Black text on secondary color
 
-    // 背景和表面
-    background = Color(0xFF00141E),       // 深蓝色背景
-    surface = Color(0xFF001A27),         // 深青色表面
-    surfaceVariant = Color(0xFF002232),   // 更深的青色变体
-    onBackground = Color(0xFFFFFFFF),     // 白色文字在背景上
-    onSurface = Color(0xFFFFFFFF),       // 白色文字在表面上
+    // Background and surface
+    background = Color(0xFF00141E),       // Dark blue background
+    surface = Color(0xFF001A27),         // Dark cyan surface
+    surfaceVariant = Color(0xFF002232),   // Deeper cyan variant
+    onBackground = Color(0xFFFFFFFF),     // White text on background
+    onSurface = Color(0xFFFFFFFF),       // White text on surface
 
-    // 错误颜色
-    error = Color(0xFFFF5252),           // 亮红色错误提示
-    errorContainer = Color(0xFF3D0000),   // 深红色错误背景
-    onError = Color(0xFFFFFFFF),         // 白色文字在错误色上
+    // Error colors
+    error = Color(0xFFFF5252),           // Bright red error indicator
+    errorContainer = Color(0xFF3D0000),   // Dark red error background
+    onError = Color(0xFFFFFFFF),         // White text on error color
 
-    // 其他
-    outline = Color(0xFF00C8FF),          // 亮蓝色边框
-    inverseSurface = Color(0xFF00C8FF),   // 亮蓝色反色表面
-    inverseOnSurface = Color(0xFF000000),  // 黑色文字在反色表面上
-    inversePrimary = Color(0xFF0099CC),    // 深蓝色反色主色调
+    // Other
+    outline = Color(0xFF00C8FF),          // Bright blue border
+    inverseSurface = Color(0xFF00C8FF),   // Bright blue inverse surface
+    inverseOnSurface = Color(0xFF000000),  // Black text on inverse surface
+    inversePrimary = Color(0xFF0099CC),    // Dark blue inverse primary
 
-    // 亮色方案（在浅色模式下使用）
-    surfaceTint = Color(0xFF00C8FF),      // 亮蓝色表面着色
-    outlineVariant = Color(0xFF006680),    // 深蓝色边框变体
-    scrim = Color(0xFF000000),            // 黑色遮罩
+    // Light scheme (used in light mode)
+    surfaceTint = Color(0xFF00C8FF),      // Bright blue surface tint
+    outlineVariant = Color(0xFF006680),    // Dark blue border variant
+    scrim = Color(0xFF000000),            // Black scrim
 )
 
-// 浅色主题配色方案（备选）
+// Light theme color scheme (alternative)
 val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF006680),       // 深蓝色主色调
-    primaryContainer = Color(0xFFB3E5FC), // 亮青色背景
-    onPrimary = Color(0xFFFFFFFF),      // 白色文字在主色调上
+    primary = Color(0xFF006680),       // Dark blue primary color
+    primaryContainer = Color(0xFFB3E5FC), // Light cyan background
+    onPrimary = Color(0xFFFFFFFF),      // White text on primary color
 
-    secondary = Color(0xFF00796B),       // 深绿色辅助色
-    secondaryContainer = Color(0xFFB2DFDB), // 亮绿色背景
-    onSecondary = Color(0xFFFFFFFF),      // 白色文字在辅助色上
+    secondary = Color(0xFF00796B),       // Dark green secondary color
+    secondaryContainer = Color(0xFFB2DFDB), // Light green background
+    onSecondary = Color(0xFFFFFFFF),      // White text on secondary color
 
-    background = Color(0xFFF5F5F5),       // 浅灰色背景
-    surface = Color(0xFFFFFFFF),         // 白色表面
-    onBackground = Color(0xFF000000),     // 黑色文字在背景上
-    onSurface = Color(0xFF000000),       // 黑色文字在表面上
+    background = Color(0xFFF5F5F5),       // Light gray background
+    surface = Color(0xFFFFFFFF),         // White surface
+    onBackground = Color(0xFF000000),     // Black text on background
+    onSurface = Color(0xFF000000),       // Black text on surface
 
-    error = Color(0xFFD32F2F),           // 深红色错误提示
-    errorContainer = Color(0xFFFFEBEE),   // 浅红色错误背景
-    onError = Color(0xFFFFFFFF),         // 白色文字在错误色上
+    error = Color(0xFFD32F2F),           // Dark red error indicator
+    errorContainer = Color(0xFFFFEBEE),   // Light red error background
+    onError = Color(0xFFFFFFFF),         // White text on error color
 
-    outline = Color(0xFF006680),          // 深蓝色边框
-    inverseSurface = Color(0xFF006680),   // 深蓝色反色表面
-    inverseOnSurface = Color(0xFFFFFFFF),  // 白色文字在反色表面上
-    inversePrimary = Color(0xFF00C8FF),    // 亮蓝色反色主色调
+    outline = Color(0xFF006680),          // Dark blue border
+    inverseSurface = Color(0xFF006680),   // Dark blue inverse surface
+    inverseOnSurface = Color(0xFFFFFFFF),  // White text on inverse surface
+    inversePrimary = Color(0xFF00C8FF),    // Bright blue inverse primary
 
-    surfaceTint = Color(0xFF006680),      // 深蓝色表面着色
-    outlineVariant = Color(0xFFB3E5FC),    // 亮青色边框变体
-    scrim = Color(0xFF000000),            // 黑色遮罩
+    surfaceTint = Color(0xFF006680),      // Dark blue surface tint
+    outlineVariant = Color(0xFFB3E5FC),    // Light cyan border variant
+    scrim = Color(0xFF000000),            // Black scrim
 )
 
-// 科技感排版配置
+// Tech-styled typography configuration
 object Typography {
-    // 标题大标题
+    // Large title
     val largeTitle = androidx.compose.ui.text.TextStyle(
         fontSize = 32.sp,
         fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
         letterSpacing = 0.5.sp
     )
 
-    // 标题
+    // Title
     val title = androidx.compose.ui.text.TextStyle(
         fontSize = 24.sp,
         fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
         letterSpacing = 0.sp
     )
 
-    // 副标题
+    // Subtitle
     val subtitle = androidx.compose.ui.text.TextStyle(
         fontSize = 18.sp,
         fontWeight = androidx.compose.ui.text.font.FontWeight.Medium,
         letterSpacing = 0.15.sp
     )
 
-    // 正文
+    // Body
     val body = androidx.compose.ui.text.TextStyle(
         fontSize = 16.sp,
         fontWeight = androidx.compose.ui.text.font.FontWeight.Normal,
         letterSpacing = 0.5.sp
     )
 
-    // 小正文
+    // Small body
     val smallBody = androidx.compose.ui.text.TextStyle(
         fontSize = 14.sp,
         fontWeight = androidx.compose.ui.text.font.FontWeight.Normal,
         letterSpacing = 0.25.sp
     )
 
-    // 按钮文字
+    // Button text
     val button = androidx.compose.ui.text.TextStyle(
         fontSize = 14.sp,
         fontWeight = androidx.compose.ui.text.font.FontWeight.Medium,
         letterSpacing = 1.25.sp
     )
 
-    // 标题小
+    // Small title
     val smallTitle = androidx.compose.ui.text.TextStyle(
         fontSize = 14.sp,
         fontWeight = androidx.compose.ui.text.font.FontWeight.Medium,
@@ -127,7 +127,7 @@ object Typography {
     )
 }
 
-// 常用间距配置
+// Common spacing configuration
 object Spacing {
     val xs = 4.dp
     val sm = 8.dp
@@ -137,7 +137,7 @@ object Spacing {
     val xxl = 48.dp
 }
 
-// 圆角配置
+// Corner radius configuration
 object Corners {
     val sm = androidx.compose.foundation.shape.RoundedCornerShape(4.dp)
     val md = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
@@ -146,7 +146,7 @@ object Corners {
     val full = androidx.compose.foundation.shape.CircleShape
 }
 
-// 阴影配置
+// Elevation configuration
 object Elevation {
     val sm = 2.dp
     val md = 4.dp
