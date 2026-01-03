@@ -27,7 +27,6 @@ kotlin {
             implementation(libs.ktor.client.logging)
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.kermit)
             implementation(libs.kotlinx.datetime)
             implementation(projects.shared) // Add dependency on shared module to access VideoPlatformService
         }

@@ -7,7 +7,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -16,36 +15,46 @@ import dev.waylon.player.ui.components.LoginQRCodeDialog
 import dev.waylon.player.ui.components.TopAppBar
 
 /**
- * 主屏幕组件
- * 包含顶部导航栏、底部导航栏和内容区域
+ * Main screen component with unified state management
+ * Contains top app bar, bottom navigation, and content area
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
-    // 当前选中的底部导航项
-    var selectedTab by remember { mutableIntStateOf(0) }
+    var screenState by remember { mutableStateOf(MainScreenState()) }
 
-    // 刷新状态
-    var isRefreshing by remember { mutableStateOf(false) }
+    val actions = object : MainScreenActions {
+        override fun onTabSelected(tabIndex: Int) {
+            screenState = screenState.updateSelectedTab(tabIndex)
+        }
 
-    // 登录状态
-    var isLoggedIn by remember { mutableStateOf(false) }
-    var showLoginQRCode by remember { mutableStateOf(false) }
+        override fun onRefreshComplete() {
+            screenState = screenState.updateRefreshing(false)
+        }
 
-    // 导航状态
-    var showVideoDetail by remember { mutableStateOf(false) }
-    var currentVideoId by remember { mutableStateOf("") }
+        override fun onLoginClick() {
+            screenState = screenState.updateLoginQRCodeVisibility(!screenState.showLoginQRCode)
+        }
+
+        override fun onVideoClick(videoId: String) {
+            screenState = screenState.updateVideoDetail(videoId, true)
+        }
+
+        override fun onBackFromVideoDetail() {
+            screenState = screenState.updateVideoDetail("", false)
+        }
+
+        override fun onLoginSuccess() {
+            screenState = screenState.updateLoginStatus(true)
+        }
+    }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                selectedTab = selectedTab,
-                onTabSelected = {
-                    selectedTab = it
-                    isRefreshing = true
-                    showVideoDetail = false // 点击标签时关闭视频详情页
-                },
-                onLoginClick = { showLoginQRCode = !showLoginQRCode }
+                selectedTab = screenState.selectedTab,
+                onTabSelected = actions::onTabSelected,
+                onLoginClick = actions::onLoginClick
             )
         }
     ) { paddingValues ->
@@ -54,49 +63,37 @@ fun MainScreen() {
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
-            if (showVideoDetail) {
-                // 显示视频详情页面
+            if (screenState.showVideoDetail) {
                 VideoDetailScreen(
-                    videoId = currentVideoId,
-                    onBackClick = { showVideoDetail = false }
+                    videoId = screenState.currentVideoId,
+                    onBackClick = actions::onBackFromVideoDetail
                 )
             } else {
-                // 根据选中的标签显示不同的页面，并传递刷新状态和视频点击回调
-                when (selectedTab) {
+                when (screenState.selectedTab) {
                     0 -> HomeRecommendScreen(
-                        isRefreshing = isRefreshing,
-                        onRefreshComplete = { isRefreshing = false },
-                        onVideoClick = { videoId ->
-                            currentVideoId = videoId
-                            showVideoDetail = true
-                        }
+                        isRefreshing = screenState.isRefreshing,
+                        onRefreshComplete = actions::onRefreshComplete,
+                        onVideoClick = actions::onVideoClick
                     )
 
                     1 -> RankingScreen(
-                        isRefreshing = isRefreshing,
-                        onRefreshComplete = { isRefreshing = false },
-                        onVideoClick = { videoId ->
-                            currentVideoId = videoId
-                            showVideoDetail = true
-                        }
+                        isRefreshing = screenState.isRefreshing,
+                        onRefreshComplete = actions::onRefreshComplete,
+                        onVideoClick = actions::onVideoClick
                     )
 
                     2 -> SearchScreen(
-                        isRefreshing = isRefreshing,
-                        onRefreshComplete = { isRefreshing = false },
-                        onVideoClick = { videoId ->
-                            currentVideoId = videoId
-                            showVideoDetail = true
-                        }
+                        isRefreshing = screenState.isRefreshing,
+                        onRefreshComplete = actions::onRefreshComplete,
+                        onVideoClick = actions::onVideoClick
                     )
                 }
             }
 
-            // 登录二维码弹窗
-            if (showLoginQRCode) {
+            if (screenState.showLoginQRCode) {
                 LoginQRCodeDialog(
-                    onDismiss = { showLoginQRCode = false },
-                    onLoginSuccess = { isLoggedIn = true; showLoginQRCode = false }
+                    onDismiss = { screenState = screenState.updateLoginQRCodeVisibility(false) },
+                    onLoginSuccess = actions::onLoginSuccess
                 )
             }
         }
