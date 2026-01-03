@@ -1,19 +1,23 @@
 package dev.waylon.player.ui.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.awt.SwingPanel
-import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent
+import androidx.compose.ui.unit.dp
 
 /**
  * Video player component - JVM platform implementation
- * Uses VLCJ library for video playback on desktop platforms
+ * Simple implementation for desktop platforms using common video player
  */
 @Composable
 actual fun VideoPlayerComponent(
@@ -26,42 +30,18 @@ actual fun VideoPlayerComponent(
     val currentIsPlaying by rememberUpdatedState(isPlaying)
     val currentOnPlayStateChange by rememberUpdatedState(onPlayStateChange)
 
-    // Create media player component
-    val mediaPlayerComponent = remember {
-        EmbeddedMediaPlayerComponent()
-    }
-
-    // Update playback state
-    DisposableEffect(currentIsPlaying) {
-        if (currentIsPlaying) {
-            mediaPlayerComponent.mediaPlayer().controls().play()
-        } else {
-            mediaPlayerComponent.mediaPlayer().controls().pause()
-        }
-        onDispose {}
-    }
-
-    // Update video URL
-    DisposableEffect(currentUrl) {
-        if (currentUrl.isNotBlank()) {
-            mediaPlayerComponent.mediaPlayer().media().play(currentUrl)
-        }
-        onDispose {}
-    }
-
     // Clean up resources
     DisposableEffect(Unit) {
         onDispose {
-            mediaPlayerComponent.mediaPlayer().controls().stop()
-            mediaPlayerComponent.mediaPlayer().release()
+            // Cleanup logic for JVM platform
         }
     }
 
-    Box(modifier = modifier.fillMaxSize()) {
-        // Use SwingPanel to embed VLCJ media player
-        SwingPanel(
-            modifier = Modifier.fillMaxSize(),
-            factory = { mediaPlayerComponent }
-        )
-    }
+    // Use common video player implementation for JVM platform
+    CommonVideoPlayerComponent(
+        modifier = modifier,
+        url = currentUrl,
+        isPlaying = currentIsPlaying,
+        onPlayStateChange = currentOnPlayStateChange
+    )
 }

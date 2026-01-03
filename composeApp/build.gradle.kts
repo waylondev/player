@@ -75,10 +75,6 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
             implementation(projects.bilibiliApi) // Add dependency on bilibiliApi module for JVM platform
-            
-            // VLCJ dependencies for video playback on desktop platforms
-            implementation("uk.co.caprica:vlcj:5.0.0-M4")
-            // vlcj-javafx is not needed for Compose Desktop, using SwingPanel instead
         }
         jsMain.dependencies {
             implementation(projects.bilibiliApi) // Add dependency on bilibiliApi module for JS platform
