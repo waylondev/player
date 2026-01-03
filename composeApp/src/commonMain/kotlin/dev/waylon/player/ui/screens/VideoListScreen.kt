@@ -81,20 +81,20 @@ fun VideoListScreen(
             val gridState = rememberLazyGridState()
 
             // 检测滚动到底部，触发加载更多
-        if (onLoadMore != null) {
-            LaunchedEffect(gridState) {
-                snapshotFlow {
-                    val visibleItems = gridState.layoutInfo.visibleItemsInfo
-                    if (visibleItems.isNotEmpty()) visibleItems.last().index else -1
-                }
-                    .distinctUntilChanged()
-                    .collect {
-                        if (it >= gridState.layoutInfo.totalItemsCount - 5 && !isLoadingMore) {
-                            onLoadMore()
-                        }
+            if (onLoadMore != null) {
+                LaunchedEffect(gridState) {
+                    snapshotFlow {
+                        val visibleItems = gridState.layoutInfo.visibleItemsInfo
+                        if (visibleItems.isNotEmpty()) visibleItems.last().index else -1
                     }
+                        .distinctUntilChanged()
+                        .collect {
+                            if (it >= gridState.layoutInfo.totalItemsCount - 5 && !isLoadingMore) {
+                                onLoadMore()
+                            }
+                        }
+                }
             }
-        }
 
             LazyVerticalGrid(
                 state = gridState,

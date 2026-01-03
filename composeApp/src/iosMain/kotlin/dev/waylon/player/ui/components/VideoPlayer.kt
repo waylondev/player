@@ -14,10 +14,7 @@ import platform.AVFoundation.AVPlayer
 import platform.AVFoundation.AVPlayerItem
 import platform.AVFoundation.AVPlayerLayer
 import platform.AVFoundation.AVURLAsset
-import platform.CoreMedia.CMTimeGetSeconds
-import platform.CoreMedia.kCMTimeZero
 import platform.Foundation.NSURL
-import platform.QuartzCore.CALayer
 import platform.UIKit.UIView
 
 /**
@@ -39,28 +36,31 @@ actual fun VideoPlayerComponent(
     val playerRef = remember { mutableListOf<AVPlayer?>(null) }
 
     // 用于处理AVPlayerLayer的UIView工厂
-    val playerViewFactory = remember { {
-        val view = UIView()
-        val player = AVPlayer()
-        playerRef[0] = player
+    val playerViewFactory = remember {
+        {
+            val view = UIView()
+            val player = AVPlayer()
+            playerRef[0] = player
 
-        // 创建AVPlayerLayer并添加到视图层
-        val playerLayer = AVPlayerLayer(player = player)
-        playerLayer.frame = view.bounds
-        playerLayer.videoGravity = AVPlayerLayerGravityResizeAspect
-        view.layer.addSublayer(playerLayer)
+            // 创建AVPlayerLayer并添加到视图层
+            val playerLayer = AVPlayerLayer(player = player)
+            playerLayer.frame = view.bounds
+            playerLayer.videoGravity = AVPlayerLayerGravityResizeAspect
+            view.layer.addSublayer(playerLayer)
 
-        // 存储layer引用以便后续更新
-        view.layer.setValue(playerLayer, forKey = "playerLayer")
-        view
-    } }
+            // 存储layer引用以便后续更新
+            view.layer.setValue(playerLayer, forKey = "playerLayer")
+            view
+        }
+    }
 
     // 处理视图更新
-    val onViewUpdate = remember { {
-        view: UIView ->
-        val playerLayer = view.layer.valueForKey("playerLayer") as? AVPlayerLayer
-        playerLayer?.frame = view.bounds
-    } }
+    val onViewUpdate = remember {
+        { view: UIView ->
+            val playerLayer = view.layer.valueForKey("playerLayer") as? AVPlayerLayer
+            playerLayer?.frame = view.bounds
+        }
+    }
 
     Box(modifier = modifier.fillMaxSize()) {
         // UIKitView用于嵌入iOS原生视图
@@ -77,10 +77,10 @@ actual fun VideoPlayerComponent(
         val nsUrl = NSURL(string = currentUrl)
         val asset = AVURLAsset(URL = nsUrl)
         val playerItem = AVPlayerItem(asset = asset)
-        
+
         player?.replaceCurrentItemWithPlayerItem(playerItem)
         player?.play()
-        
+
         onDispose {}
     }
 
