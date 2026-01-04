@@ -24,7 +24,7 @@ data class VideoStreamRequest(
     /** Video quality */
     val qn: Int? = 32,
     /** Video format */
-    val fnval: Int? = 16,
+    val fnval: Int? = 4048,
     /** Video version (always 0) */
     val fnver: Int? = 0,
     /** Whether to allow 4K video */
