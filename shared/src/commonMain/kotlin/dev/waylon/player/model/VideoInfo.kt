@@ -58,5 +58,5 @@ data class VideoInfo(
     /**
      * Video CID (Content ID) - required for video playback
      */
-    val cid: Int? = null
+    val cid: Long? = null
 )

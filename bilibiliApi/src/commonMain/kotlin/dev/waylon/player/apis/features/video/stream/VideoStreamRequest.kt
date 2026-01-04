@@ -20,12 +20,12 @@ data class VideoStreamRequest(
     /** Video bvid (optional, use either avid or bvid) */
     val bvid: String? = null,
     /** Video cid (required) */
-    val cid: Int,
+    val cid: Long,
     /** Video quality */
     val qn: Int? = 32,
     /** Video format */
     val fnval: Int? = 1,
-    /** Video version */
+    /** Video version (always 0) */
     val fnver: Int? = 0,
     /** Whether to allow 4K video */
     val fourk: Int? = 0

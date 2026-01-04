@@ -42,12 +42,13 @@ interface VideoPlatformService {
      * 
      * @param videoId Video ID
      * @param qualityId Video quality ID, default 80 (1080p)
+     * @param cid Video content ID, default 0
      * @return Video stream information
      */
     suspend fun getVideoStream(
         videoId: String,
         qualityId: Int = 80,
-        cid: Int = 80
+        cid: Long = 0
     ): VideoStream
 
     /**

@@ -40,7 +40,10 @@ object HomeRecommendationsTransformer : Transformer<JsonObject, List<VideoInfo>>
             val tname = item["tname"]?.jsonPrimitive?.contentOrNull
             val pubdate = item["pubdate"]?.jsonPrimitive?.longOrNull ?: 0
             val desc = item["desc"]?.jsonPrimitive?.contentOrNull ?: ""
-            val cid = item["cid"]?.jsonPrimitive?.intOrNull
+            
+            // Handle cid which might be a large Long value, int, or string in API response
+            val cid = item["cid"]?.jsonPrimitive?.longOrNull ?: 
+                      item["cid"]?.jsonPrimitive?.contentOrNull?.toLongOrNull()
 
             VideoInfo(
                 id = bvid,

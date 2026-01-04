@@ -39,7 +39,10 @@ object VideoDetailTransformer : Transformer<JsonObject, VideoDetail> {
         val duration = data["duration"]?.jsonPrimitive?.intOrNull ?: 0
         val tname = data["tname"]?.jsonPrimitive?.contentOrNull
         val pubdate = data["pubdate"]?.jsonPrimitive?.longOrNull ?: 0
-        val cid = data["cid"]?.jsonPrimitive?.intOrNull ?: 0
+        
+        // Handle cid which might be a large Long value
+        val cid = data["cid"]?.jsonPrimitive?.longOrNull ?: 
+                  data["cid"]?.jsonPrimitive?.contentOrNull?.toLongOrNull() ?: 0
 
         // Create VideoInfo first
         val videoInfo = VideoInfo(
@@ -51,6 +54,7 @@ object VideoDetailTransformer : Transformer<JsonObject, VideoDetail> {
             duration = duration,
             category = tname,
             publishTime = pubdate,
+            description = data["desc"]?.jsonPrimitive?.contentOrNull,
             cid = cid
         )
 

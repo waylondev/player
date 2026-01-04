@@ -76,7 +76,7 @@ class BilibiliAdapter : VideoPlatformService {
     override suspend fun getVideoStream(
         videoId: String,
         qualityId: Int,
-        cid: Int
+        cid: Long
     ): VideoStream {
         val request = VideoStreamRequest(
             bvid = videoId, cid = cid, qn = qualityId

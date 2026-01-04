@@ -48,7 +48,10 @@ object AllSearchTransformer : Transformer<JsonObject, List<VideoInfo>> {
             val tname = item["typename"]?.jsonPrimitive?.contentOrNull
             val pubdate = item["pubdate"]?.jsonPrimitive?.longOrNull ?: 0
             val desc = item["description"]?.jsonPrimitive?.contentOrNull ?: ""
-            val cid = item["cid"]?.jsonPrimitive?.intOrNull
+            
+            // Handle cid which might be a large Long value, int, or string in API response
+            val cid = item["cid"]?.jsonPrimitive?.longOrNull ?: 
+                      item["cid"]?.jsonPrimitive?.contentOrNull?.toLongOrNull()
 
             // Convert duration string (e.g. "41:22") to seconds
             val duration = durationStr.split(":").reversed().foldIndexed(0) { index, acc, part ->
