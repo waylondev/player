@@ -101,27 +101,17 @@ actual fun VideoPlayerComponent(
 
                 Logger.i("VideoPlayer", "Loading video with URL: $currentUrl, Audio URL: $audioUrl")
                 
+                // Create a default data source factory
                 val dataSourceFactory = androidx.media3.datasource.DefaultDataSource.Factory(context)
-                val mediaSourceFactory = androidx.media3.exoplayer.source.ProgressiveMediaSource.Factory(dataSourceFactory)
                 
-                // Create media source based on whether we have separate audio and video streams
-                val mediaSource = if (audioUrl != null && audioUrl.isNotBlank()) {
-                    // For separate audio and video streams, use MergingMediaSource to combine them
-                    Logger.i("VideoPlayer", "Combining separate audio and video streams")
-                    
-                    // Create video media source
-                    val videoMediaSource = mediaSourceFactory.createMediaSource(MediaItem.fromUri(Uri.parse(currentUrl)))
-                    
-                    // Create audio media source
-                    val audioMediaSource = mediaSourceFactory.createMediaSource(MediaItem.fromUri(Uri.parse(audioUrl)))
-                    
-                    // Merge video and audio media sources
-                    androidx.media3.exoplayer.source.MergingMediaSource(videoMediaSource, audioMediaSource)
-                } else {
-                    // Fallback to single stream URL
-                    Logger.i("VideoPlayer", "Using single media source for combined streams")
-                    mediaSourceFactory.createMediaSource(MediaItem.fromUri(Uri.parse(currentUrl)))
-                }
+                // Create a default media source factory that handles multiple formats including DASH
+                val mediaSourceFactory = androidx.media3.exoplayer.source.DefaultMediaSourceFactory(dataSourceFactory)
+                
+                // Create media item from video URL
+                val mediaItem = androidx.media3.common.MediaItem.fromUri(android.net.Uri.parse(currentUrl))
+                
+                // Create media source - DefaultMediaSourceFactory will automatically handle DASH format
+                val mediaSource = mediaSourceFactory.createMediaSource(mediaItem)
                 
                 // Set the media source and prepare the player
                 exoPlayer.setMediaSource(mediaSource)
