@@ -143,28 +143,27 @@ fun LoginQRCodeDialog(
                                 )
                             }
                         } else if (qrCodeInfo != null) {
-                            // Should display actual QR code image here, using placeholder for now
+                            // Display actual QR code image using KamelImage with the URL returned by Bilibili API
                             Box(
                                 modifier = Modifier
-                                    .size(180.dp)
-                                    .background(
+                                    .size(200.dp)
+                                    .clip(Corners.md)
+                                    .border(
+                                        width = 2.dp,
                                         brush = androidx.compose.ui.graphics.Brush.linearGradient(
                                             colors = listOf(
-                                                MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
-                                                MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f),
-                                                MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+                                                MaterialTheme.colorScheme.primary,
+                                                MaterialTheme.colorScheme.secondary,
+                                                MaterialTheme.colorScheme.primary
                                             )
                                         ),
                                         shape = Corners.md
                                     )
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.AccountCircle,
+                                KamelImage(
+                                    resource = asyncPainterResource(data = qrCodeInfo.imageUrl),
                                     contentDescription = "Login QR Code",
-                                    modifier = Modifier
-                                        .size(120.dp)
-                                        .align(Alignment.Center),
-                                    tint = MaterialTheme.colorScheme.primary
+                                    modifier = Modifier.fillMaxSize()
                                 )
                             }
                         } else {

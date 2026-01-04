@@ -1,74 +1,59 @@
 # Bilibili Video Player
 
-A modern video playback platform based on Kotlin Multiplatform + Compose Multiplatform, supporting multiple platforms with high performance and extensibility.
+A modern, high-performance video playback platform built with Kotlin Multiplatform + Compose Multiplatform, supporting multiple platforms with a clean, extensible architecture.
 
 ## 🚀 Core Features
 
-### Architecture Excellence
-- **Clean Architecture**: Clear layered architecture with dependency inversion principle
-- **SOLID Principles**: Single responsibility, open/closed, interface segregation, dependency inversion
-- **High Performance**: Platform-native video playback libraries with coroutine optimization
-- **High Extensibility**: KMP-based architecture for easy platform and feature expansion
+### Video Playback
+- ✅ **Multi-platform Support**: Android, JVM Desktop, Web (JS)
+- ✅ **DASH Format**: Support for separate audio and video streams
+- ✅ **Platform-native Players**: ExoPlayer (Android), HTML5 Video (Web), Common Player (Desktop)
+- ✅ **Playback Control**: Play/pause with async state management
 
-### Platform Support (Implemented)
-- ✅ **Android**: ExoPlayer native video playback with optimized APK size (6.3MB)
-- ✅ **JVM Desktop**: Common video player implementation with Compose Desktop
-- ✅ **Web (JS)**: HTML5 Video element with UTF-8 encoding support
+### Content Features
+- ✅ **Home Recommendations**: Async loading with coroutines
+- ✅ **Hot Ranking**: Real-time data with optimized API calls
+- ✅ **Video Search**: Non-blocking operations
+- ✅ **Adaptive Layout**: FlowRow-based responsive design for related videos
 
-## 🏗️ Architecture Design
+### User System
+- ✅ **QR Code Login**: Direct Bilibili API integration with real QR code display
+- ✅ **State Management**: Clean, structured state handling
 
-### Modular Architecture
+## 🏗️ Architecture
+
+### Modular Design
 ```
 player/
-├── bilibiliApi/          # API client layer - business logic abstraction
-├── composeApp/          # UI layer - Compose Multiplatform
-├── shared/              # Shared layer - core models and interfaces
-└── server/             # Server layer - optional backend service
+├── bilibiliApi/          # API client layer
+├── composeApp/          # UI layer (Compose Multiplatform)
+└── shared/              # Shared models and interfaces
 ```
 
 ### Technology Stack
-- **Language**: Kotlin Multiplatform with coroutine optimization
-- **UI Framework**: Compose Multiplatform
-- **Networking**: Ktor Client with async operations
+- **Language**: Kotlin Multiplatform with Coroutines
+- **UI**: Compose Multiplatform (Material3)
+- **Networking**: Ktor Client (Async)
 - **Serialization**: Kotlinx Serialization
 - **Dependency Management**: Gradle Version Catalog
-- **Performance**: Non-blocking operations with coroutines
 
-### Coroutine-Optimized Architecture
-- **Async API Calls**: All network operations use suspend functions
-- **State Management**: Structured concurrency with DisposableEffect
-- **Resource Management**: Automatic cleanup with coroutine scopes
-- **Performance**: Zero blocking operations, pure coroutine-based design
-
-## 🎯 Core Features (Implemented)
-
-### Video Playback
-- Multi-platform native video player components
-- Playback state management with coroutine lifecycle
-- Playback control (play/pause) with async state updates
-- Platform-specific optimizations
-
-### Content Browsing
-- Home page video recommendations with async loading
-- Hot ranking videos with coroutine-based data fetching
-- Video search functionality with non-blocking operations
-
-### User System
-- QR code login with coroutine-based polling
-- Login status management with async state updates
-- User information retrieval with suspend functions
+### Clean Architecture Principles
+- **SOLID**: Single responsibility, open/closed, interface segregation, dependency inversion
+- **Dependency Inversion**: Clear layered architecture with abstractions
+- **Non-blocking**: All network operations use suspend functions
+- **Resource Safety**: Automatic cleanup with DisposableEffect
 
 ## 🛠️ Quick Start
 
 ### Environment Requirements
 - JDK 21+
-- Android SDK (for Android platform)
+- Android SDK (for Android builds)
 
-### Build & Run
+### Build Commands
 
-#### Android (Optimized APK: 6.3MB)
+#### Android Release APK
 ```bash
-./gradlew :composeApp:assembleDebug
+./gradlew :composeApp:assembleRelease
 ```
 
 #### JVM Desktop
@@ -81,96 +66,60 @@ player/
 ./gradlew :composeApp:jsBrowserDevelopmentRun
 ```
 
-## 📱 Platform Implementation Details
+## 📱 Platform Details
 
 ### Android
-- **Video Playback**: ExoPlayer 3.x with coroutine lifecycle management
-- **UI**: Compose Material3 with async state updates
-- **Performance**: Native hardware acceleration with non-blocking operations
-- **APK Size**: Optimized to 6.3MB with ProGuard and resource shrinking
+- **Video Player**: ExoPlayer 3.x with DASH support
+- **UI**: Compose Material3 with adaptive layouts
+- **APK Size**: Optimized with ProGuard and resource shrinking
 
 ### JVM Desktop
-- **Video Playback**: Common video player implementation with Compose Desktop
-- **UI**: Compose Desktop with coroutine-based state management
-- **Architecture**: Clean separation with platform-specific optimizations
+- **Video Player**: Common implementation with Compose Desktop
+- **UI**: Material3 design system
 
 ### Web (JS)
-- **Video Playback**: HTML5 Video element with UTF-8 encoding support
-- **UI**: Compose for Web with async data loading
-- **Compatibility**: Modern browser support with non-blocking operations
-- **兼容性**: 现代浏览器支持
+- **Video Player**: HTML5 Video element
+- **Compatibility**: Modern browsers with UTF-8 support
 
-### iOS
-- **视频播放**: AVFoundation
-- **UI**: Compose for iOS
-- **性能**: 原生Metal渲染
+## 🔧 Key Implementation Details
 
-## 🔧 开发特色
-
-### API抽象层
+### Video Player Component
 ```kotlin
-// DSL风格的API调用
-val videos = HomeRecommendationService.executeAndTransform(request) { response ->
-    HomeRecommendationsTransformer.transform(response.toJsonObject())
-}
-```
-
-### 状态管理
-```kotlin
-// 结构化状态管理
-data class MainScreenState(
-    val selectedTab: Int = 0,
-    val isRefreshing: Boolean = false,
-    val isLoggedIn: Boolean = false,
-    val showVideoDetail: Boolean = false,
-    val currentVideoId: String = ""
-)
-```
-
-### 平台特定实现
-```kotlin
-// 多平台视频播放器
+// Multiplatform video player with audio support
 expect fun VideoPlayerComponent(
     url: String,
+    audioUrl: String? = null,
     isPlaying: Boolean,
     onPlayStateChange: (Boolean) -> Unit
 )
 ```
 
-## 📊 性能优化
+### DASH Stream Handling
+- **Separate Audio/Video**: MergingMediaSource for combined playback
+- **Progressive Loading**: Async stream preparation with ExoPlayer
+- **Quality Adaptation**: Automatic resolution handling
 
-### APK大小优化
-- ProGuard代码混淆
-- 资源压缩
-- 依赖优化（当前APK大小: ~24MB）
+### Adaptive Related Videos Layout
+- **FlowRow**: Responsive grid layout
+- **Consistent Design**: Matches recommendation list appearance
+- **Optimized Spacing**: Proper padding and alignment
 
-### 启动优化
-- 懒加载组件
-- 异步初始化
-- 配置缓存
+## 📊 Performance Optimizations
 
-### 内存优化
-- DisposableEffect资源管理
-- 图片懒加载
-- 状态对象复用
+### Resource Management
+- **DisposableEffect**: Automatic cleanup of coroutines and players
+- **Image Lazy Loading**: Efficient cover image loading
+- **State Reuse**: Optimized state object management
 
-## 🔮 扩展计划
+### Build Optimization
+- **ProGuard**: Code obfuscation and shrinking
+- **Resource Compression**: Reduced APK size
+- **Dependency Tree**: Optimized library dependencies
 
-### 近期规划
-- [ ] 播放列表功能
-- [ ] 下载管理
-- [ ] 弹幕支持
-- [ ] 主题切换
+## 📄 License
 
-### 技术演进
-- [ ] Compose Multiplatform 1.6+ 适配
-- [ ] KMP稳定版迁移
-- [ ] 性能监控集成
-
-## 📄 许可证
-
-MIT License - 详见 [LICENSE](LICENSE) 文件
+MIT License - See [LICENSE](LICENSE) file
 
 ---
 
-**架构评分**: 8.8/10 - 生产就绪的多平台视频播放解决方案
+A production-ready, multi-platform video playback solution built with modern Kotlin technologies.
