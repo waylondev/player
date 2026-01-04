@@ -101,24 +101,26 @@ actual fun VideoPlayerComponent(
 
                 Logger.i("VideoPlayer", "Loading video with URL: $currentUrl, Audio URL: $audioUrl")
                 
+                val dataSourceFactory = androidx.media3.datasource.DefaultDataSource.Factory(context)
+                val mediaSourceFactory = androidx.media3.exoplayer.source.ProgressiveMediaSource.Factory(dataSourceFactory)
+                
                 // Create media source based on whether we have separate audio and video streams
-                val mediaSource = if (audioUrl != null) {
-                    // For DASH format with separate audio and video streams,
-                    // we need to use a different approach. ExoPlayer requires a manifest file
-                    // that describes both audio and video streams.
-                    // In this case, we'll use the video URL which should be the DASH manifest
-                    Logger.i("VideoPlayer", "Using DASH format with combined manifest")
-                    androidx.media3.exoplayer.source.DashMediaSource.Factory(
-                        androidx.media3.datasource.DefaultDataSource.Factory(context)
-                    )
-                        .createMediaSource(MediaItem.fromUri(Uri.parse(currentUrl)))
+                val mediaSource = if (audioUrl != null && audioUrl.isNotBlank()) {
+                    // For separate audio and video streams, use MergingMediaSource to combine them
+                    Logger.i("VideoPlayer", "Combining separate audio and video streams")
+                    
+                    // Create video media source
+                    val videoMediaSource = mediaSourceFactory.createMediaSource(MediaItem.fromUri(Uri.parse(currentUrl)))
+                    
+                    // Create audio media source
+                    val audioMediaSource = mediaSourceFactory.createMediaSource(MediaItem.fromUri(Uri.parse(audioUrl)))
+                    
+                    // Merge video and audio media sources
+                    androidx.media3.exoplayer.source.MergingMediaSource(videoMediaSource, audioMediaSource)
                 } else {
-                    // Fallback to progressive media source for single stream URLs
-                    Logger.i("VideoPlayer", "Using progressive media source for single stream")
-                    androidx.media3.exoplayer.source.ProgressiveMediaSource.Factory(
-                        androidx.media3.datasource.DefaultDataSource.Factory(context)
-                    )
-                        .createMediaSource(MediaItem.fromUri(Uri.parse(currentUrl)))
+                    // Fallback to single stream URL
+                    Logger.i("VideoPlayer", "Using single media source for combined streams")
+                    mediaSourceFactory.createMediaSource(MediaItem.fromUri(Uri.parse(currentUrl)))
                 }
                 
                 // Set the media source and prepare the player
