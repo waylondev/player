@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -84,37 +85,22 @@ fun LoginQRCodeDialog(
         }
     }
 
-    // Background overlay
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.7f))
-            .padding(32.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        // Dialog content (with tech-style border and shadow)
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            shape = Corners.lg,
-            elevation = CardDefaults.cardElevation(Elevation.xl),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "Scan QR Code to Login Bilibili",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(bottom = 20.dp)
             )
-        ) {
+        },
+        text = {
             Column(
-                modifier = Modifier.padding(24.dp),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "Scan QR Code to Login Bilibili",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(bottom = 20.dp)
-                )
-
                 // QR code display area (with gradient border)
                 Card(
                     modifier = Modifier
@@ -208,33 +194,27 @@ fun LoginQRCodeDialog(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
                 )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // Button area
-                Box(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Button(
-                        onClick = onDismiss,
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = Corners.full,
-                        elevation = ButtonDefaults.buttonElevation(Elevation.md),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    ) {
-                        Text(
-                            text = "Cancel",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                }
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = onDismiss,
+                modifier = Modifier.fillMaxWidth(),
+                shape = Corners.full,
+                elevation = ButtonDefaults.buttonElevation(Elevation.md),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            ) {
+                Text(
+                    text = "Cancel",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                )
             }
         }
-    }
+    )
 }
 
 /**

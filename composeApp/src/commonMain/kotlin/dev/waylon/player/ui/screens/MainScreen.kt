@@ -89,13 +89,14 @@ fun MainScreen() {
                     )
                 }
             }
-
-            if (screenState.showLoginQRCode) {
-                LoginQRCodeDialog(
-                    onDismiss = { screenState = screenState.updateLoginQRCodeVisibility(false) },
-                    onLoginSuccess = actions::onLoginSuccess
-                )
-            }
         }
+    }
+
+    // Login QR code dialog - should be rendered at top level, not nested in other layouts
+    if (screenState.showLoginQRCode) {
+        LoginQRCodeDialog(
+            onDismiss = { screenState = screenState.updateLoginQRCodeVisibility(false) },
+            onLoginSuccess = actions::onLoginSuccess
+        )
     }
 }
