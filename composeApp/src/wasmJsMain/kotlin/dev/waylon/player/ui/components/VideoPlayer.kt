@@ -20,6 +20,7 @@ import org.w3c.dom.events.Event
 actual fun VideoPlayerComponent(
     modifier: Modifier,
     url: String,
+    audioUrl: String?,
     isPlaying: Boolean,
     onPlayStateChange: (Boolean) -> Unit
 ) {

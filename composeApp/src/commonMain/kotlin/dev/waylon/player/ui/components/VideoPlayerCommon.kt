@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 expect fun VideoPlayerComponent(
     modifier: Modifier = Modifier,
     url: String,
+    audioUrl: String? = null,
     isPlaying: Boolean,
     onPlayStateChange: (Boolean) -> Unit
 )
@@ -31,6 +32,7 @@ expect fun VideoPlayerComponent(
 fun CommonVideoPlayerComponent(
     modifier: Modifier = Modifier,
     url: String,
+    audioUrl: String? = null,
     isPlaying: Boolean,
     onPlayStateChange: (Boolean) -> Unit
 ) {

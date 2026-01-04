@@ -14,10 +14,12 @@ import androidx.compose.ui.Modifier
 actual fun VideoPlayerComponent(
     modifier: Modifier,
     url: String,
+    audioUrl: String?,
     isPlaying: Boolean,
     onPlayStateChange: (Boolean) -> Unit
 ) {
     val currentUrl by rememberUpdatedState(url)
+    val currentAudioUrl by rememberUpdatedState(audioUrl)
     val currentIsPlaying by rememberUpdatedState(isPlaying)
     val currentOnPlayStateChange by rememberUpdatedState(onPlayStateChange)
 
@@ -32,6 +34,7 @@ actual fun VideoPlayerComponent(
     CommonVideoPlayerComponent(
         modifier = modifier,
         url = currentUrl,
+        audioUrl = currentAudioUrl,
         isPlaying = currentIsPlaying,
         onPlayStateChange = currentOnPlayStateChange
     )

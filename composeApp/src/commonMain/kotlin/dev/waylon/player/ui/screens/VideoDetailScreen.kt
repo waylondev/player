@@ -47,6 +47,7 @@ import dev.waylon.player.ui.components.VideoPlayerComponent
 data class VideoStreamState(
     val isLoading: Boolean = false,
     val streamUrl: String? = null,
+    val audioStreamUrl: String? = null,
     val error: String? = null
 )
 
@@ -197,9 +198,16 @@ fun VideoDetailScreen(
                                     videoId = videoDetail.videoInfo.id,
                                     cid = videoDetail.videoInfo.cid ?: 0
                                 )
+                                
+                                // Get first available video stream URL
+                                val videoUrl = videoStream.streams.firstOrNull()?.url
+                                // Get first available audio stream URL
+                                val audioUrl = videoStream.audioStreams?.firstOrNull()?.url
+                                
                                 videoStreamState.value = VideoStreamState(
                                     isLoading = false,
-                                    streamUrl = videoStream.streams.firstOrNull()?.url
+                                    streamUrl = videoUrl,
+                                    audioStreamUrl = audioUrl
                                 )
                             } catch (e: Exception) {
                                 videoStreamState.value = VideoStreamState(
@@ -216,6 +224,7 @@ fun VideoDetailScreen(
                     // Destructure stream state
                     val streamState = videoStreamState.value ?: VideoStreamState(isLoading = true)
                     val videoStreamUrl = streamState.streamUrl
+                    val audioStreamUrl = streamState.audioStreamUrl
                     val streamLoading = streamState.isLoading
                     val streamError = streamState.error
 
@@ -237,6 +246,7 @@ fun VideoDetailScreen(
                         VideoPlayerComponent(
                             modifier = Modifier.height(300.dp).fillMaxWidth(),
                             url = videoStreamUrl!!,
+                            audioUrl = audioStreamUrl,
                             isPlaying = isPlaying,
                             onPlayStateChange = { newState ->
                                 isPlaying = newState

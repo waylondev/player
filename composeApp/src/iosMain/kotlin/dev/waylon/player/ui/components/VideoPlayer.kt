@@ -25,6 +25,7 @@ import platform.UIKit.UIView
 actual fun VideoPlayerComponent(
     modifier: Modifier,
     url: String,
+    audioUrl: String?,
     isPlaying: Boolean,
     onPlayStateChange: (Boolean) -> Unit
 ) {

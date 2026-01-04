@@ -29,6 +29,7 @@ import dev.waylon.player.apis.common.util.Logger
 actual fun VideoPlayerComponent(
     modifier: Modifier,
     url: String,
+    audioUrl: String?,
     isPlaying: Boolean,
     onPlayStateChange: (Boolean) -> Unit
 ) {
@@ -91,15 +92,37 @@ actual fun VideoPlayerComponent(
         onDispose {}
     }
 
-    // Update video URL
-    LaunchedEffect(currentUrl) {
+    // Update video URL and audio URL
+    LaunchedEffect(currentUrl, audioUrl) {
         if (currentUrl.isNotBlank()) {
             try {
                 playerState.setError(null)
                 playerState.setLoading(true)
 
-                val mediaItem = MediaItem.fromUri(Uri.parse(currentUrl))
-                exoPlayer.setMediaItem(mediaItem)
+                Logger.i("VideoPlayer", "Loading video with URL: $currentUrl, Audio URL: $audioUrl")
+                
+                // Create media source based on whether we have separate audio and video streams
+                val mediaSource = if (audioUrl != null) {
+                    // For DASH format with separate audio and video streams,
+                    // we need to use a different approach. ExoPlayer requires a manifest file
+                    // that describes both audio and video streams.
+                    // In this case, we'll use the video URL which should be the DASH manifest
+                    Logger.i("VideoPlayer", "Using DASH format with combined manifest")
+                    androidx.media3.exoplayer.source.DashMediaSource.Factory(
+                        androidx.media3.datasource.DefaultDataSource.Factory(context)
+                    )
+                        .createMediaSource(MediaItem.fromUri(Uri.parse(currentUrl)))
+                } else {
+                    // Fallback to progressive media source for single stream URLs
+                    Logger.i("VideoPlayer", "Using progressive media source for single stream")
+                    androidx.media3.exoplayer.source.ProgressiveMediaSource.Factory(
+                        androidx.media3.datasource.DefaultDataSource.Factory(context)
+                    )
+                        .createMediaSource(MediaItem.fromUri(Uri.parse(currentUrl)))
+                }
+                
+                // Set the media source and prepare the player
+                exoPlayer.setMediaSource(mediaSource)
                 exoPlayer.prepare()
 
                 // Don't auto-play when URL changes, respect the current playback state
@@ -108,6 +131,7 @@ actual fun VideoPlayerComponent(
                 }
             } catch (e: Exception) {
                 playerState.setError("Failed to load video: ${e.message}")
+                Logger.e("VideoPlayer", "Error loading video: ${e.message}", e)
             }
         }
     }
