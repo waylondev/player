@@ -31,3 +31,5 @@ reference/
 .gradle/
 build/
 target/
+
+*.lock

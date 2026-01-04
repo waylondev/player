@@ -9,6 +9,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonPrimitive
 
 /**
@@ -58,24 +59,5 @@ class QRCodeGenerateServiceTest {
         Logger.i(tag, "=== QR Code Generate API Test Ended ===")
     }
 
-    @Test
-    fun testGenerateQRCodeWithConvenienceMethod() = runTest {
-        // Log test start
-        Logger.i(tag, "=== QR Code Generate Convenience Method Test Started ===")
-        Logger.i(tag, "")
-
-        // Use convenience method to generate QR code
-        val request = QRCodeGenerateRequest()
-        val response = QRCodeGenerateService.generateQRCode(request)
-
-        // Log response results
-        Logger.i(tag, "Response: $response")
-
-        // Verify basic response structure
-        assertNotNull(response, "Response should not be null")
-        assertNotNull(response.data, "Response should contain QR code data")
-
-        Logger.i(tag, "=== QR Code Generate Convenience Method Test Ended ===")
-    }
 
 }

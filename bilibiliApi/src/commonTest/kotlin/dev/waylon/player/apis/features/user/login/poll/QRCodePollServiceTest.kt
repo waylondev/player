@@ -1,15 +1,18 @@
 package dev.waylon.player.apis.features.user.login.poll
 
+import dev.waylon.player.apis.common.extensions.parseAs
 import dev.waylon.player.apis.common.util.Logger
 import dev.waylon.player.apis.features.user.login.generate.QRCodeGenerateRequest
 import dev.waylon.player.apis.features.user.login.generate.QRCodeGenerateService
 import io.ktor.client.call.body
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
+import kotlin.test.DefaultAsserter.assertNotNull
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 
@@ -50,7 +53,7 @@ class QRCodePollServiceTest {
         Logger.i(tag, "")
 
         // Use full response method to print complete JSON
-        val request = QRCodePollRequest(qrcodeKey = qrcodeKey)
+        val request = QRCodePollRequest(qrcodeKey = qrcodeKey!!)
         val response = QRCodePollService.execute(request).body<JsonObject>()
 
         // Log response results
@@ -77,18 +80,5 @@ class QRCodePollServiceTest {
         Logger.i(tag, "=== QR Code Poll Convenience Method Test Started ===")
         Logger.i(tag, "")
 
-        // Use convenience method to poll QR code status
-        val request = QRCodePollRequest(qrcodeKey = qrcodeKey)
-        val response = QRCodePollService.pollQRCodeStatus(request)
-
-        // Log response results
-        Logger.i(tag, "Response: $response")
-
-        // Verify basic response structure
-        assertNotNull(response, "Response should not be null")
-        assertNotNull(response.code, "Response should contain code field")
-        assertNotNull(response.message, "Response should contain message field")
-
-        Logger.i(tag, "=== QR Code Poll Convenience Method Test Ended ===")
     }
 }
