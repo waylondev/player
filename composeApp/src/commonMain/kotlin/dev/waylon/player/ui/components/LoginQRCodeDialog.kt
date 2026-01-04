@@ -65,15 +65,15 @@ fun LoginQRCodeDialog(
                 isGeneratingQRCode = false
                 loginStatus = "Please scan the QR code with Bilibili APP to login"
 
-                // Start polling login status
-                pollLoginStatus(result.qrCodeInfo!!.qrCodeKey) { status, success ->
-                    loginStatus = status
-                    isLoginSuccess = success
-                    if (success) {
-                        // Login successful, callback and close dialog
-                        onLoginSuccess()
-                    }
-                }
+                // Start polling login status - Disabled as requested
+                // pollLoginStatus(result.qrCodeInfo!!.qrCodeKey) { status, success ->
+                //     loginStatus = status
+                //     isLoginSuccess = success
+                //     if (success) {
+                //         // Login successful, callback and close dialog
+                //         onLoginSuccess()
+                //     }
+                // }
             } else {
                 isGeneratingQRCode = false
                 loginStatus = "QR code generation failed: ${result.errorMessage}"
@@ -178,7 +178,30 @@ fun LoginQRCodeDialog(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // Show the returned QR code URL as requested
+                qrCodeInfo?.let {
+                    Text(
+                        text = "QR Code URL:",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                    
+                    Text(
+                        text = it.imageUrl,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp),
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
 
                 // Login status prompt
                 Text(
