@@ -20,10 +20,9 @@ object NavTransformer : Transformer<JsonObject, PlatformContext> {
     override fun transform(input: JsonObject): PlatformContext {
         // Parse JSON directly to get needed fields
         val data = input["data"]?.jsonObject
-            ?: throw NavTransformException("Missing data field in API response")
 
         // Parse user info from Bilibili response
-        val userInfo = parseUserInfo(data)
+        val userInfo = if (data != null) parseUserInfo(data) else null
 
         return PlatformContext(
             userInfo = userInfo,
@@ -50,8 +49,3 @@ object NavTransformer : Transformer<JsonObject, PlatformContext> {
         )
     }
 }
-
-/**
- * Custom exception for nav transformation errors
- */
-class NavTransformException(message: String, cause: Throwable? = null) : Exception(message, cause)

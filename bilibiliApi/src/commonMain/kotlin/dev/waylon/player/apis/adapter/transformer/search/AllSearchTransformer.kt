@@ -20,10 +20,8 @@ object AllSearchTransformer : Transformer<JsonObject, List<VideoInfo>> {
 
     override fun transform(input: JsonObject): List<VideoInfo> {
         // Parse JSON directly to get needed fields
-        val data = input["data"]?.jsonObject
-            ?: throw AllSearchTransformException("Missing data field in API response")
-        val resultArray = data["result"]?.jsonArray
-            ?: throw AllSearchTransformException("Missing result field in API response")
+        val data = input["data"]?.jsonObject ?: return emptyList()
+        val resultArray = data["result"]?.jsonArray ?: return emptyList()
 
         // Find the video result in the result array
         val videoResultItem = resultArray.find { item ->

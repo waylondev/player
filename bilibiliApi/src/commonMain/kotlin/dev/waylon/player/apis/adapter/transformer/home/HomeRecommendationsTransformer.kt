@@ -19,10 +19,8 @@ object HomeRecommendationsTransformer : Transformer<JsonObject, List<VideoInfo>>
 
     override fun transform(input: JsonObject): List<VideoInfo> {
         // Parse JSON directly to get needed fields
-        val data = input["data"]?.jsonObject
-            ?: throw HomeRecommendationsTransformException("Missing data field in API response")
-        val items = data["item"]?.jsonArray
-            ?: throw HomeRecommendationsTransformException("Missing item field in API response")
+        val data = input["data"]?.jsonObject ?: return emptyList()
+        val items = data["item"]?.jsonArray ?: return emptyList()
 
         // Extract needed fields from JSON
         return items.mapNotNull { itemJson ->

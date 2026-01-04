@@ -27,12 +27,21 @@ object VideoStreamTransformer : Transformer<JsonObject, VideoStream> {
         // Check API response code
         val code = input["code"]?.jsonPrimitive?.intOrNull
         if (code != 0) {
-            val message = input["message"]?.jsonPrimitive?.contentOrNull ?: "Unknown error"
-            throw VideoStreamTransformException("API returned error: $message (code: $code)")
+            // Return empty VideoStream if API returns error
+            return VideoStream(
+                videoId = "",
+                selectedQualityId = 64,
+                streams = emptyList(),
+                audioStreams = emptyList()
+            )
         }
 
-        val data = input["data"]?.jsonObject
-            ?: throw VideoStreamTransformException("Missing data field in API response")
+        val data = input["data"]?.jsonObject ?: return VideoStream(
+            videoId = "",
+            selectedQualityId = 64,
+            streams = emptyList(),
+            audioStreams = emptyList()
+        )
 
         // Parse basic video information
         val videoId = data["bvid"]?.jsonPrimitive?.contentOrNull ?: ""
@@ -251,8 +260,3 @@ object VideoStreamTransformer : Transformer<JsonObject, VideoStream> {
         }
     }
 }
-
-/**
- * Custom exception for video stream transformation errors
- */
-class VideoStreamTransformException(message: String, cause: Throwable? = null) : Exception(message, cause)

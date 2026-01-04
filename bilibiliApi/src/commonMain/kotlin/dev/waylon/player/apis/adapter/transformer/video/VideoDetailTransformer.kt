@@ -21,7 +21,20 @@ object VideoDetailTransformer : Transformer<JsonObject, VideoDetail> {
     override fun transform(input: JsonObject): VideoDetail {
         // Parse JSON directly to get needed fields
         val data = input["data"]?.jsonObject
-            ?: throw VideoDetailTransformException("Missing data field in API response")
+        
+        if (data == null) {
+            // Return default VideoDetail if data is missing
+            return VideoDetail(
+                videoInfo = VideoInfo(
+                    id = "",
+                    title = "",
+                    coverUrl = "",
+                    author = "",
+                    playCount = 0,
+                    duration = 0
+                )
+            )
+        }
 
         // Parse nested objects properly
         val stat = data["stat"]?.jsonObject
@@ -82,8 +95,3 @@ object VideoDetailTransformer : Transformer<JsonObject, VideoDetail> {
         )
     }
 }
-
-/**
- * Custom exception for video detail transformation errors
- */
-class VideoDetailTransformException(message: String, cause: Throwable? = null) : Exception(message, cause)

@@ -23,12 +23,11 @@ object QRCodePollTransformer : Transformer<JsonObject, QRCodePollResponse> {
         val message = input["message"]?.jsonPrimitive?.contentOrNull ?: ""
         val ttl = input["ttl"]?.jsonPrimitive?.intOrNull ?: 0
         val data = input["data"]?.jsonObject
-            ?: throw QRCodePollTransformException("Missing data field in API response")
 
         // Parse QR code poll data
-        val url = data["url"]?.jsonPrimitive?.contentOrNull ?: ""
-        val refreshToken = data["refresh_token"]?.jsonPrimitive?.contentOrNull
-        val timestamp = data["timestamp"]?.jsonPrimitive?.longOrNull ?: 0L
+        val url = data?.get("url")?.jsonPrimitive?.contentOrNull ?: ""
+        val refreshToken = data?.get("refresh_token")?.jsonPrimitive?.contentOrNull
+        val timestamp = data?.get("timestamp")?.jsonPrimitive?.longOrNull ?: 0L
 
         return QRCodePollResponse(code, message, ttl, QRCodePollData(url, refreshToken, timestamp, code, message))
     }
