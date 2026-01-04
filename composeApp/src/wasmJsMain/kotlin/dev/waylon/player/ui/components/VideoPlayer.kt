@@ -7,8 +7,10 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.Lifecycle
 import kotlinx.browser.document
 import org.w3c.dom.HTMLVideoElement
+import org.w3c.dom.events.Event
 
 /**
  * Video player component - wasmJs platform implementation
@@ -42,11 +44,11 @@ actual fun VideoPlayerComponent(
         document.body?.appendChild(videoContainer)
 
         // Set up event listeners
-        val playListener = { _: dynamic ->
+        val playListener = { _: Event ->
             currentOnPlayStateChange(true)
         }
 
-        val pauseListener = { _: dynamic ->
+        val pauseListener = { _: Event ->
             currentOnPlayStateChange(false)
         }
 
