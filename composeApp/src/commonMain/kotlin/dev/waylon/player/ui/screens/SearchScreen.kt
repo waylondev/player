@@ -1,8 +1,10 @@
 package dev.waylon.player.ui.screens
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,7 +14,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
@@ -27,9 +28,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
@@ -37,8 +36,11 @@ import androidx.compose.ui.unit.dp
 import dev.waylon.player.model.VideoInfo
 import dev.waylon.player.service.ServiceProvider
 import dev.waylon.player.ui.components.VideoCard
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.launch
+
+/**
+ * SearchScreen state data class for unified state management
+ */
+typealias SearchScreenState = BaseSearchScreenState<VideoInfo>
 
 /**
  * Search videos screen
@@ -50,96 +52,48 @@ fun SearchScreen(
     onVideoClick: (String) -> Unit
 ) {
     // Search state
-    var searchKeyword by remember { mutableStateOf("") }
-    var searchResults by remember { mutableStateOf<List<VideoInfo>>(emptyList()) }
-    var isSearching by remember { mutableStateOf(false) }
-    var isLoadingMore by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-    var page by remember { mutableStateOf(1) }
-    var hasMore by remember { mutableStateOf(true) }
-
-    // Grid state for loading more
-    val gridState = rememberLazyGridState()
+    var screenState by remember { mutableStateOf(SearchScreenState()) }
 
     // Execute search (initial search and refresh)
-    LaunchedEffect(searchKeyword, isRefreshing) {
+    LaunchedEffect(screenState.searchKeyword, isRefreshing) {
         // If no search keyword, only handle refresh
-        if (searchKeyword.isBlank() && !isRefreshing) {
-            searchResults = emptyList()
-            errorMessage = null
+        if (screenState.searchKeyword.isBlank() && !isRefreshing) {
+            screenState = screenState.clearResults()
             onRefreshComplete()
             return@LaunchedEffect
         }
 
         // If refresh state but no search keyword, complete refresh directly
-        if (isRefreshing && searchKeyword.isBlank()) {
+        if (isRefreshing && screenState.searchKeyword.isBlank()) {
             onRefreshComplete()
             return@LaunchedEffect
         }
 
         // If search keyword exists, execute search
-        if (searchKeyword.isNotBlank()) {
+        if (screenState.searchKeyword.isNotBlank()) {
             try {
-                isSearching = true
-                errorMessage = null
-                page = 1 // Reset page number
-                hasMore = true // Reset whether there is more data
+                screenState = screenState.updateSearching(true)
                 // Call unified API to search videos
                 val result = ServiceProvider.videoService.searchVideos(
-                    keyword = searchKeyword,
+                    keyword = screenState.searchKeyword,
                     pageSize = 20,
-                    page = page
+                    page = 1 // Always search first page when keyword changes
                 )
-                searchResults = result
-                hasMore = result.size >= 20 // If returned data is less than pageSize, no more data
+                screenState = screenState.updateSearchResults(result)
             } catch (e: Exception) {
-                errorMessage = "Search failed: ${e.message}"
-                searchResults = emptyList()
+                screenState = screenState.updateSearchResults(emptyList(), "Search failed: ${e.message}")
             } finally {
-                isSearching = false
+                screenState = screenState.updateSearching(false)
                 onRefreshComplete()
             }
         }
     }
 
-    // Load more videos
-    val coroutineScope = rememberCoroutineScope()
-
-    LaunchedEffect(gridState) {
-        snapshotFlow {
-            val visibleItems = gridState.layoutInfo.visibleItemsInfo
-            if (visibleItems.isNotEmpty()) visibleItems.last().index else -1
-        }
-            .distinctUntilChanged()
-            .collect { lastVisibleIndex: Int ->
-                if (hasMore && !isLoadingMore && !isSearching && lastVisibleIndex >= gridState.layoutInfo.totalItemsCount - 5) {
-                    // Load more
-                    coroutineScope.launch {
-                        try {
-                            isLoadingMore = true
-                            page += 1
-                            val result = ServiceProvider.videoService.searchVideos(
-                                keyword = searchKeyword,
-                                pageSize = 20,
-                                page = page
-                            )
-                            searchResults = searchResults + result
-                            hasMore = result.size >= 20
-                        } catch (e: Exception) {
-                            errorMessage = "Load more failed: ${e.message}"
-                        } finally {
-                            isLoadingMore = false
-                        }
-                    }
-                }
-            }
-    }
-
     Column(modifier = Modifier.fillMaxSize()) {
         // Search bar
         OutlinedTextField(
-            value = searchKeyword,
-            onValueChange = { searchKeyword = it },
+            value = screenState.searchKeyword,
+            onValueChange = { screenState = screenState.updateSearchKeyword(it) },
             label = { Text(text = "Search videos") },
             placeholder = { Text(text = "Enter video title, UP name, etc.") },
             leadingIcon = {
@@ -149,8 +103,8 @@ fun SearchScreen(
                 )
             },
             trailingIcon = {
-                if (searchKeyword.isNotBlank()) {
-                    IconButton(onClick = { searchKeyword = "" }) {
+                if (screenState.searchKeyword.isNotBlank()) {
+                    IconButton(onClick = { screenState = screenState.updateSearchKeyword("") }) {
                         Icon(
                             imageVector = Icons.Default.Clear,
                             contentDescription = "Clear"
@@ -159,7 +113,7 @@ fun SearchScreen(
                 }
             },
             singleLine = true,
-            keyboardOptions = KeyboardOptions(
+            keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
                 keyboardType = KeyboardType.Text
             ),
             modifier = Modifier
@@ -170,7 +124,7 @@ fun SearchScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         // Search results or status display
-        if (isSearching) {
+        if (screenState.isSearching) {
             // Searching state
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -186,7 +140,7 @@ fun SearchScreen(
                     color = MaterialTheme.colorScheme.primary
                 )
             }
-        } else if (searchKeyword.isBlank()) {
+        } else if (screenState.searchKeyword.isBlank()) {
             // Search prompt
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -204,16 +158,16 @@ fun SearchScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-        } else if (errorMessage != null) {
+        } else if (screenState.errorMessage != null) {
             // Error message
             Text(
-                text = errorMessage!!,
+                text = screenState.errorMessage!!,
                 color = MaterialTheme.colorScheme.error,
                 modifier = Modifier
                     .padding(16.dp)
                     .fillMaxWidth()
             )
-        } else if (searchResults.isEmpty()) {
+        } else if (screenState.searchResults.isEmpty()) {
             // No results prompt
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -226,41 +180,21 @@ fun SearchScreen(
                 )
             }
         } else {
-            // Search results list - adaptive layout, minimum card width 200dp
+            // Search results list - grid layout
+            val gridState = rememberLazyGridState()
             LazyVerticalGrid(
                 state = gridState,
                 columns = GridCells.Adaptive(minSize = 200.dp),
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(8.dp)
             ) {
-                items(searchResults) {
+                items(screenState.searchResults) {
                     VideoCard(
                         video = it,
                         modifier = Modifier.padding(8.dp).clickable {
                             onVideoClick(it.id)
                         }
                     )
-                }
-
-                // Load more indicator
-                if (isLoadingMore) {
-                    item {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            CircularProgressIndicator(
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                            Text(
-                                text = "Loading more...",
-                                modifier = Modifier.padding(top = 8.dp),
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    }
                 }
             }
         }

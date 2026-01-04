@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,7 +42,7 @@ fun VideoListScreen(
         errorMessage?.let {
             Text(
                 text = it,
-                color = androidx.compose.material3.MaterialTheme.colorScheme.error,
+                color = MaterialTheme.colorScheme.error,
                 modifier = Modifier
                     .padding(16.dp)
                     .fillMaxWidth()
@@ -56,12 +57,12 @@ fun VideoListScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CircularProgressIndicator(
-                    color = androidx.compose.material3.MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.primary
                 )
                 Text(
                     text = "Loading...",
                     modifier = Modifier.padding(top = 16.dp),
-                    color = androidx.compose.material3.MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
         } else if (videos.isEmpty()) {
@@ -72,30 +73,13 @@ fun VideoListScreen(
             ) {
                 Text(
                     text = "No video data available",
-                    style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
-                    color = androidx.compose.material3.MaterialTheme.colorScheme.onSurfaceVariant
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         } else {
-            // Video list - adaptive layout with minimum 200dp card width
+            // Video list - grid layout
             val gridState = rememberLazyGridState()
-
-            // Detect scroll to bottom and trigger loading more
-            if (onLoadMore != null) {
-                LaunchedEffect(gridState) {
-                    snapshotFlow {
-                        val visibleItems = gridState.layoutInfo.visibleItemsInfo
-                        if (visibleItems.isNotEmpty()) visibleItems.last().index else -1
-                    }
-                        .distinctUntilChanged()
-                        .collect {
-                            if (it >= gridState.layoutInfo.totalItemsCount - 5 && !isLoadingMore) {
-                                onLoadMore()
-                            }
-                        }
-                }
-            }
-
             LazyVerticalGrid(
                 state = gridState,
                 columns = GridCells.Adaptive(minSize = 200.dp),
@@ -121,15 +105,30 @@ fun VideoListScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             CircularProgressIndicator(
-                                color = androidx.compose.material3.MaterialTheme.colorScheme.primary
+                                color = MaterialTheme.colorScheme.primary
                             )
                             Text(
                                 text = "Loading more...",
-                                modifier = Modifier.padding(top = 8.dp),
-                                color = androidx.compose.material3.MaterialTheme.colorScheme.primary
+                                modifier = Modifier.padding(top = 8.dp)
                             )
                         }
                     }
+                }
+            }
+
+            // Load more trigger
+            if (onLoadMore != null) {
+                LaunchedEffect(gridState) {
+                    snapshotFlow {
+                        val visibleItems = gridState.layoutInfo.visibleItemsInfo
+                        if (visibleItems.isNotEmpty()) visibleItems.last().index else -1
+                    }
+                        .distinctUntilChanged()
+                        .collect {
+                            if (it >= gridState.layoutInfo.totalItemsCount - 5 && !isLoadingMore) {
+                                onLoadMore()
+                            }
+                        }
                 }
             }
         }

@@ -10,6 +10,11 @@ import dev.waylon.player.model.VideoInfo
 import dev.waylon.player.service.ServiceProvider
 
 /**
+ * RankingScreen state data class for unified state management
+ */
+typealias RankingScreenState = BaseListScreenState<VideoInfo>
+
+/**
  * Ranking video list screen
  */
 @Composable
@@ -18,35 +23,34 @@ fun RankingScreen(
     onRefreshComplete: () -> Unit,
     onVideoClick: (String) -> Unit
 ) {
-    // Video list state
-    var videos by remember { mutableStateOf<List<VideoInfo>>(emptyList()) }
-    var isLoading by remember { mutableStateOf(true) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var screenState by remember { mutableStateOf(RankingScreenState()) }
 
     // Load data (initial load and refresh)
     LaunchedEffect(isRefreshing) {
-        try {
-            isLoading = true
-            // Call unified API to get ranking videos
-            val result = ServiceProvider.videoService.getHotRanking(
-                rid = 0,
-                day = 7 // Use 7-day hot data as ranking
-            )
-            videos = result
-        } catch (e: Exception) {
-            errorMessage = "Loading failed: ${e.message}"
-        } finally {
-            isLoading = false
-            onRefreshComplete()
+        if (isRefreshing || screenState.items.isEmpty()) {
+            try {
+                screenState = screenState.updateLoading(true)
+                // Call unified API to get ranking videos
+                val result = ServiceProvider.videoService.getHotRanking(
+                    rid = 0,
+                    day = 7 // Use 7-day hot data as ranking
+                )
+                screenState = screenState.updateItems(result)
+            } catch (e: Exception) {
+                screenState = screenState.updateItems(emptyList(), "Loading failed: ${e.message}")
+            } finally {
+                screenState = screenState.updateLoading(false)
+                onRefreshComplete()
+            }
         }
     }
 
     VideoListScreen(
         title = "Ranking",
-        videos = videos,
-        isLoading = isLoading,
+        videos = screenState.items,
+        isLoading = screenState.isLoading,
         isLoadingMore = false, // Ranking doesn't need load more
-        errorMessage = errorMessage,
+        errorMessage = screenState.errorMessage,
         onLoadMore = null, // Ranking doesn't need load more
         onVideoClick = onVideoClick
     )

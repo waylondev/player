@@ -12,6 +12,55 @@ import dev.waylon.player.service.ServiceProvider
 import kotlinx.coroutines.launch
 
 /**
+ * HomeRecommendScreen state data class for unified state management
+ */
+data class HomeRecommendScreenState(
+    val baseState: BaseListScreenState<VideoInfo> = BaseListScreenState(),
+    val page: Int = 1
+) {
+    // Delegate properties
+    val videos: List<VideoInfo> get() = baseState.items
+    val isLoading: Boolean get() = baseState.isLoading
+    val isLoadingMore: Boolean get() = baseState.isLoadingMore
+    val errorMessage: String? get() = baseState.errorMessage
+
+    /**
+     * Updates the loading state
+     */
+    fun updateLoading(loading: Boolean): HomeRecommendScreenState {
+        return copy(baseState = baseState.updateLoading(loading))
+    }
+
+    /**
+     * Updates the videos list and error message
+     */
+    fun updateVideos(videos: List<VideoInfo>, errorMessage: String? = null): HomeRecommendScreenState {
+        return copy(baseState = baseState.updateItems(videos, errorMessage))
+    }
+
+    /**
+     * Updates the loading more state
+     */
+    fun updateLoadingMore(loadingMore: Boolean): HomeRecommendScreenState {
+        return copy(baseState = baseState.updateLoadingMore(loadingMore))
+    }
+
+    /**
+     * Updates the page number
+     */
+    fun updatePage(page: Int): HomeRecommendScreenState {
+        return copy(page = page)
+    }
+
+    /**
+     * Appends new videos to the list
+     */
+    fun appendVideos(newVideos: List<VideoInfo>): HomeRecommendScreenState {
+        return copy(baseState = baseState.appendItems(newVideos))
+    }
+}
+
+/**
  * Home recommendation video list
  */
 @Composable
@@ -20,32 +69,29 @@ fun HomeRecommendScreen(
     onRefreshComplete: () -> Unit,
     onVideoClick: (String) -> Unit
 ) {
-    // Video list state
-    var videos by remember { mutableStateOf<List<VideoInfo>>(emptyList()) }
-    var isLoading by remember { mutableStateOf(true) }
-    var isLoadingMore by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-    var page by remember { mutableStateOf(1) }
+    var screenState by remember { mutableStateOf(HomeRecommendScreenState()) }
 
     // Load more coroutine scope
     val coroutineScope = rememberCoroutineScope()
 
     // Load data (initial load and refresh)
     LaunchedEffect(isRefreshing) {
-        try {
-            isLoading = true
-            page = 1
-            // Call unified API to get home recommendation videos
-            val result = ServiceProvider.videoService.getHomeRecommendations(
-                pageSize = 20,
-                page = page
-            )
-            videos = result
-        } catch (e: Exception) {
-            errorMessage = "Load failed: ${e.message}"
-        } finally {
-            isLoading = false
-            onRefreshComplete()
+        if (isRefreshing || screenState.videos.isEmpty()) {
+            try {
+                screenState = screenState.updateLoading(true)
+                screenState = screenState.updatePage(1)
+                // Call unified API to get home recommendation videos
+                val result = ServiceProvider.videoService.getHomeRecommendations(
+                    pageSize = 20,
+                    page = screenState.page
+                )
+                screenState = screenState.updateVideos(result)
+            } catch (e: Exception) {
+                screenState = screenState.updateVideos(emptyList(), "Load failed: ${e.message}")
+            } finally {
+                screenState = screenState.updateLoading(false)
+                onRefreshComplete()
+            }
         }
     }
 
@@ -53,19 +99,19 @@ fun HomeRecommendScreen(
     val onLoadMore = {
         coroutineScope.launch {
             try {
-                isLoadingMore = true
-                page += 1
+                screenState = screenState.updateLoadingMore(true)
+                screenState = screenState.updatePage(screenState.page + 1)
                 // Call unified API to get more home recommendation videos
                 val result = ServiceProvider.videoService.getHomeRecommendations(
                     pageSize = 20,
-                    page = page
+                    page = screenState.page
                 )
                 // Directly append data, no deduplication
-                videos = videos + result
+                screenState = screenState.appendVideos(result)
             } catch (e: Exception) {
-                errorMessage = "Load more failed: ${e.message}"
+                screenState = screenState.updateVideos(screenState.videos, "Load more failed: ${e.message}")
             } finally {
-                isLoadingMore = false
+                screenState = screenState.updateLoadingMore(false)
             }
         }
         Unit
@@ -73,10 +119,10 @@ fun HomeRecommendScreen(
 
     VideoListScreen(
         title = "Home Recommendations",
-        videos = videos,
-        isLoading = isLoading,
-        isLoadingMore = isLoadingMore,
-        errorMessage = errorMessage,
+        videos = screenState.videos,
+        isLoading = screenState.isLoading,
+        isLoadingMore = screenState.isLoadingMore,
+        errorMessage = screenState.errorMessage,
         onLoadMore = onLoadMore,
         onVideoClick = onVideoClick
     )
