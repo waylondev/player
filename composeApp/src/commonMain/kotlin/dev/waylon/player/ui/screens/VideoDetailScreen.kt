@@ -306,15 +306,36 @@ fun VideoDetailScreen(
                                 modifier = Modifier.padding(bottom = 16.dp)
                             )
                         } else {
-                            // Related videos list layout
-                            Column(modifier = Modifier.fillMaxWidth()) {
-                                for (video in relatedVideos.take(6)) {
+                            // Related videos grid layout
+                            androidx.compose.foundation.layout.Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp)
+                            ) {
+                                for (video in relatedVideos.take(3)) {
                                     VideoCard(
                                         video = video,
-                                        modifier = Modifier.padding(8.dp).clickable {
-                                            // Handle related video click
-                                            screenState = screenState.updateCurrentVideoId(video.id)
-                                        }
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .clickable {
+                                                // Handle related video click
+                                                screenState = screenState.updateCurrentVideoId(video.id)
+                                            }
+                                    )
+                                }
+                            }
+                            androidx.compose.foundation.layout.Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp)
+                            ) {
+                                for (video in relatedVideos.drop(3).take(3)) {
+                                    VideoCard(
+                                        video = video,
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .clickable {
+                                                // Handle related video click
+                                                screenState = screenState.updateCurrentVideoId(video.id)
+                                            }
                                     )
                                 }
                             }
