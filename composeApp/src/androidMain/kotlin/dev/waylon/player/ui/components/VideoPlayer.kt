@@ -101,8 +101,8 @@ actual fun VideoPlayerComponent(
 
                 Logger.i("VideoPlayer", "Loading video with URL: $currentUrl, Audio URL: $audioUrl")
                 
-                // Create a default data source factory
-                val dataSourceFactory = androidx.media3.datasource.DefaultDataSource.Factory(context)
+                // Create a data source factory
+                val dataSourceFactory = androidx.media3.datasource.DefaultHttpDataSource.Factory()
                 
                 // Create a default media source factory that handles multiple formats including DASH
                 val mediaSourceFactory = androidx.media3.exoplayer.source.DefaultMediaSourceFactory(dataSourceFactory)
@@ -110,11 +110,8 @@ actual fun VideoPlayerComponent(
                 // Create media item from video URL
                 val mediaItem = androidx.media3.common.MediaItem.fromUri(android.net.Uri.parse(currentUrl))
                 
-                // Create media source - DefaultMediaSourceFactory will automatically handle DASH format
-                val mediaSource = mediaSourceFactory.createMediaSource(mediaItem)
-                
                 // Set the media source and prepare the player
-                exoPlayer.setMediaSource(mediaSource)
+                exoPlayer.setMediaSource(mediaSourceFactory.createMediaSource(mediaItem))
                 exoPlayer.prepare()
 
                 // Don't auto-play when URL changes, respect the current playback state
