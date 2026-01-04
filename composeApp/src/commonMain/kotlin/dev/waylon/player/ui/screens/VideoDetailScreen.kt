@@ -1,14 +1,17 @@
 package dev.waylon.player.ui.screens
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -306,16 +309,19 @@ fun VideoDetailScreen(
                                 modifier = Modifier.padding(bottom = 16.dp)
                             )
                         } else {
-                            // Related videos adaptive grid layout using FlowRow
-                            androidx.compose.foundation.layout.FlowRow(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp),
-                                verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(16.dp)
+                            // Related videos adaptive grid layout - same as recommendation list
+                            // Use FlowRow for grid layout with same padding and spacing as LazyVerticalGrid(GridCells.Adaptive(minSize = 200.dp))
+                            FlowRow(
+                                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
-                                for (video in relatedVideos) {
+                                relatedVideos.forEach { video ->
                                     VideoCard(
                                         video = video,
                                         modifier = Modifier
+                                            .width(200.dp)
+                                            .padding(8.dp)
                                             .clickable {
                                                 // Handle related video click
                                                 screenState = screenState.updateCurrentVideoId(video.id)
