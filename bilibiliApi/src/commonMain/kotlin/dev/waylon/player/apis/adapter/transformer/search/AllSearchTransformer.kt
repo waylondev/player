@@ -5,6 +5,7 @@ import dev.waylon.player.model.VideoInfo
 import kotlin.math.pow
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -47,6 +48,7 @@ object AllSearchTransformer : Transformer<JsonObject, List<VideoInfo>> {
             val tname = item["typename"]?.jsonPrimitive?.contentOrNull
             val pubdate = item["pubdate"]?.jsonPrimitive?.longOrNull ?: 0
             val desc = item["description"]?.jsonPrimitive?.contentOrNull ?: ""
+            val cid = item["cid"]?.jsonPrimitive?.intOrNull
 
             // Convert duration string (e.g. "41:22") to seconds
             val duration = durationStr.split(":").reversed().foldIndexed(0) { index, acc, part ->
@@ -62,7 +64,8 @@ object AllSearchTransformer : Transformer<JsonObject, List<VideoInfo>> {
                 duration = duration,
                 category = tname,
                 publishTime = pubdate,
-                description = desc.take(100) // Take first 100 characters as short description
+                description = desc.take(100), // Take first 100 characters as short description
+                cid = cid
             )
         }
     }

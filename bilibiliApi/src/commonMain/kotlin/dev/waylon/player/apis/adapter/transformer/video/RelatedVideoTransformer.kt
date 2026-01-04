@@ -38,6 +38,7 @@ object RelatedVideoTransformer : Transformer<JsonObject, List<VideoInfo>> {
             val tname = item["tname"]?.jsonPrimitive?.contentOrNull
             val pubdate = item["pubdate"]?.jsonPrimitive?.longOrNull ?: 0
             val desc = item["desc"]?.jsonPrimitive?.contentOrNull ?: ""
+            val cid = item["cid"]?.jsonPrimitive?.intOrNull
 
             VideoInfo(
                 id = bvid,
@@ -48,7 +49,8 @@ object RelatedVideoTransformer : Transformer<JsonObject, List<VideoInfo>> {
                 duration = duration,
                 category = tname,
                 publishTime = pubdate,
-                description = desc.take(100) // Take first 100 characters as short description
+                description = desc.take(100), // Take first 100 characters as short description
+                cid = cid
             )
         }
     }
