@@ -16,6 +16,11 @@ A modern, high-performance video playback platform built with Kotlin Multiplatfo
 - ✅ **Video Search**: Non-blocking operations
 - ✅ **Adaptive Layout**: FlowRow-based responsive design for related videos
 
+## 📱 Screenshots
+
+### Home Page
+![Home Page](assets/home.png)
+
 ### User System
 - ✅ **QR Code Login**: Direct Bilibili API integration with real QR code display
 - ✅ **State Management**: Clean, structured state handling

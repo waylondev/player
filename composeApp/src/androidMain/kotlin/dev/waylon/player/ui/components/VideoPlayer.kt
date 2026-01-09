@@ -101,11 +101,11 @@ actual fun VideoPlayerComponent(
 
                 Logger.i("VideoPlayer", "Loading video with URL: $currentUrl, Audio URL: $audioUrl")
                 
-                // Create a data source factory
-                val dataSourceFactory = androidx.media3.datasource.DefaultHttpDataSource.Factory()
+                // Create a HTTP data source factory
+                val httpDataSourceFactory = androidx.media3.datasource.DefaultHttpDataSource.Factory()
                 
                 // Create a default media source factory that handles multiple formats including DASH
-                val mediaSourceFactory = androidx.media3.exoplayer.source.DefaultMediaSourceFactory(dataSourceFactory)
+                val mediaSourceFactory = androidx.media3.exoplayer.source.DefaultMediaSourceFactory(httpDataSourceFactory)
                 
                 // Create media item from video URL
                 val mediaItem = androidx.media3.common.MediaItem.fromUri(android.net.Uri.parse(currentUrl))
